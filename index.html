@@ -898,7 +898,7 @@
   <div class="wave-info">
     <div class="wave-content">
       <div class="wave-title">Gelombang 1</div>
-      <div class="wave-subtitle">Penerimaan Peserta Didik Baru Tahun Ajaran 2026/2027</div>
+      <div class="wave-subtitle">Sistem Penerimaan Murid Baru Tahun Ajaran 2026/2027</div>
     </div>
   </div>
 
@@ -1554,24 +1554,25 @@
             <div class="timeline-detail">
 REKAPITULASI PENDAFTAR SPMB
 SMK DARUL ABROR
-TAHUN PELAJARAN 2026/2027
+TAHUN AJARAN 2026/2027
 GELOMBANG 1
 
-Jumlah Total Pendaftar : ${item.total || 0} Siswa
+Jumlah Total Pendaftar : *${item.total || 0}* Siswa
 
 Asal Sekolah:
-* MTs Darul Abror : ${item.mtsda || 0} Siswa
-* MTs / SMP Lain  : ${item.mtslain || 0} Siswa
+* MTs Darul Abror : *${item.mtsda || 0}* Siswa
+* MTs / SMP Lain  : *${item.mtslain || 0}* Siswa
 
 Jenis Kelamin:
-* Laki-laki : ${item.lk || 0} Siswa
-* Perempuan : ${item.pr || 0} Siswa
+* Laki-laki : *${item.lk || 0}* Siswa
+* Perempuan : *${item.pr || 0}* Siswa
 
 Domisili:
-* Ponpes Darul Abror : ${item.ppda || 0} Siswa
-* Ponpes Nuurul Qur'an : ${item.ppnq || 0} Siswa
+* Ponpes Darul Abror : *${item.ppda || 0}* Siswa
+* Ponpes Nuurul Qur'an : *${item.ppnq || 0}* Siswa
 
-Update: ${item.date}
+info 21-my.github.io/smkda
+Update: _${item.date}_
             </div>
             
             <div class="timeline-actions">
@@ -1676,24 +1677,25 @@ Update: ${item.date}
       const text = encodeURIComponent(
 `REKAPITULASI PENDAFTAR SPMB
 SMK DARUL ABROR
-TAHUN PELAJARAN 2026/2027
+TAHUN AJARAN 2026/2027
 GELOMBANG 1
 
-Jumlah Total Pendaftar : ${currentData.total || 0} Siswa
+Jumlah Total Pendaftar : *${currentData.total || 0}* Siswa
 
 Asal Sekolah:
-* MTs Darul Abror : ${currentData.mtsda || 0} Siswa
-* MTs / SMP Lain  : ${currentData.mtslain || 0} Siswa
+* MTs Darul Abror : *${currentData.mtsda || 0}* Siswa
+* MTs / SMP Lain  : *${currentData.mtslain || 0}* Siswa
 
 Jenis Kelamin:
-* Laki-laki : ${currentData.lk || 0} Siswa
-* Perempuan : ${currentData.pr || 0} Siswa
+* Laki-laki : *${currentData.lk || 0}* Siswa
+* Perempuan : *${currentData.pr || 0}* Siswa
 
 Domisili:
-* Ponpes Darul Abror : ${currentData.ppda || 0} Siswa
-* Ponpes Nuurul Qur'an : ${currentData.ppnq || 0} Siswa
+* Ponpes Darul Abror : *${currentData.ppda || 0}* Siswa
+* Ponpes Nuurul Qur'an : *${currentData.ppnq || 0}* Siswa
 
-Update: ${date}`
+info 21-my.github.io/smkda
+Update: _${date}_`
       );
       
       window.open(`https://wa.me/?text=${text}`, '_blank');
@@ -1709,24 +1711,25 @@ Update: ${date}`
       const text = encodeURIComponent(
 `REKAPITULASI PENDAFTAR SPMB
 SMK DARUL ABROR
-TAHUN PELAJARAN 2026/2027
+TAHUN AJARAN 2026/2027
 GELOMBANG 1
 
-Jumlah Total Pendaftar : ${item.total || 0} Siswa
+Jumlah Total Pendaftar : *${item.total || 0}* Siswa
 
 Asal Sekolah:
-* MTs Darul Abror : ${item.mtsda || 0} Siswa
-* MTs / SMP Lain  : ${item.mtslain || 0} Siswa
+* MTs Darul Abror : *${item.mtsda || 0}* Siswa
+* MTs / SMP Lain  : *${item.mtslain || 0}* Siswa
 
 Jenis Kelamin:
-* Laki-laki : ${item.lk || 0} Siswa
-* Perempuan : ${item.pr || 0} Siswa
+* Laki-laki : *${item.lk || 0}* Siswa
+* Perempuan : *${item.pr || 0}* Siswa
 
 Domisili:
-* Ponpes Darul Abror : ${item.ppda || 0} Siswa
-* Ponpes Nuurul Qur'an : ${item.ppnq || 0} Siswa
+* Ponpes Darul Abror : *${item.ppda || 0}* Siswa
+* Ponpes Nuurul Qur'an : *${item.ppnq || 0}* Siswa
 
-Update: ${item.date}`
+info 21-my.github.io/smkda
+Update: _${item.date}_`
       );
       
       window.open(`https://wa.me/?text=${text}`, '_blank');
@@ -1744,3 +1747,4 @@ Update: ${item.date}`
   </script>
 </body>
 </html>
+
