@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - SIPDA SMK Darul Abror</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="img/logosmkda.png">
+    <style>
+        /* ========== VARIABLES & RESET ========== */
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338CA;
+            --primary-light: #6366F1;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 6px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 40px -10px rgb(0 0 0 / 0.15);
+            --radius-sm: 0.375rem;
+            --radius: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: 16px;
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--gray-900);
+            line-height: 1.5;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        /* ========== LOGIN CONTAINER ========== */
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* ========== LOGIN HEADER ========== */
+        .login-header {
+            padding: 40px 32px 24px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-container img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+        }
+
+        .logo-container .fallback-logo {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .login-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 400;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ========== LOGIN FORM ========== */
+        .login-form {
+            padding: 40px 32px;
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+            transition: var(--transition);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.1rem;
+            z-index: 2;
+            transition: var(--transition);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: var(--gray-100);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gray-800);
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--gray-400);
+        }
+
+        /* Password Toggle Button */
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            padding: 4px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .password-toggle i {
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        /* ========== LOGIN BUTTON ========== */
+        .login-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .login-button:hover::before {
+            left: 100%;
+        }
+
+        .login-button i {
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .login-button:hover i {
+            transform: translateX(4px);
+        }
+
+        /* ========== ERROR MESSAGE ========== */
+        .error-message {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 16px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .error-message i {
+            font-size: 1.1rem;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        /* ========== FOOTER ========== */
+        .login-footer {
+            padding: 24px 32px;
+            text-align: center;
+            background: var(--gray-100);
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-600);
+            font-size: 0.85rem;
+        }
+
+        .footer-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .footer-text i {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        /* ========== LOADING OVERLAY ========== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--gray-200);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .loading-text {
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 480px) {
+            html {
+                font-size: 15px;
+            }
+            
+            body {
+                padding: 16px;
+            }
+            
+            .login-container {
+                max-width: 100%;
+            }
+            
+            .login-header {
+                padding: 32px 24px 20px;
+            }
+            
+            .login-form {
+                padding: 32px 24px;
+            }
+            
+            .logo-container {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .logo-container .fallback-logo {
+                font-size: 2rem;
+            }
+            
+            .login-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            html {
+                font-size: 14px;
+            }
+            
+            .login-header {
+                padding: 28px 20px 16px;
+            }
+            
+            .login-form {
+                padding: 28px 20px;
+            }
+            
+            .form-input {
+                padding: 14px 14px 14px 44px;
+            }
+            
+            .input-icon {
+                left: 14px;
+            }
+            
+            .password-toggle {
+                right: 14px;
+            }
+        }
+
+        /* ========== UTILITY CLASSES ========== */
+        .text-center { text-align: center; }
+        .text-primary { color: var(--primary); }
+        .text-secondary { color: var(--secondary); }
+        .text-danger { color: var(--danger); }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="login-container">
+        <!-- Login Header -->
+        <div class="login-header">
+            <div class="logo-container">
+                <!-- Logo akan di-load dari file lokal -->
+                <div class="fallback-logo">
+                    <i class="fas fa-school"></i>
+                </div>
+            </div>
+            <h1>SIPDA</h1>
+            <p>Sistem Presensi Digital SMK Darul Abror</p>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="login-form">
+            <!-- Username Input -->
+            <div class="form-group">
+                <label class="form-label" for="username">
+                    <i class="fas fa-user text-primary" style="margin-right: 6px;"></i>
+                    Username
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user input-icon"></i>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        class="form-input" 
+                        placeholder="Masukkan username Anda" 
+                        required
+                        autocomplete="username"
+                        autofocus
+                    >
+                </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="form-group">
+                <label class="form-label" for="password">
+                    <i class="fas fa-lock text-primary" style="margin-right: 6px;"></i>
+                    Password
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="Masukkan password Anda" 
+                        required
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="password-toggle" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText"></span>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="login-button" id="loginButton">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>MASUK KE APLIKASI</span>
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <div class="footer-text">
+                <i class="fas fa-copyright"></i>
+                <span>© 2024 SMK Darul Abror. Hak Cipta Dilindungi.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Memproses login...</div>
+        </div>
+    </div>
+
+    <script>
+        // ========== MOCK DATABASE ==========
+        class MockDatabase {
+            constructor() {
+                this.storageKey = 'sipda_db_v4';
+                this.initData();
+            }
+
+            initData() {
+                if (!localStorage.getItem(this.storageKey)) {
+                    const initialData = {
+                        users: [
+                            { 
+                                id: '1', 
+                                username: 'guru001', 
+                                password: 'smkda123',
+                                name: 'Budi Santoso',
+                                employeeId: '198304152006041002',
+                                role: 'Guru Matematika',
+                                status: 'PNS',
+                                email: 'budi.santoso@smkda.sch.id',
+                                phone: '081234567890',
+                                isAdmin: false,
+                                createdAt: new Date()
+                            },
+                            { 
+                                id: '2', 
+                                username: 'admin', 
+                                password: 'admin123',
+                                name: 'Administrator',
+                                employeeId: '197801012000121001',
+                                role: 'Administrator Sistem',
+                                status: 'PNS',
+                                email: 'admin@smkda.sch.id',
+                                phone: '081298765432',
+                                isAdmin: true,
+                                createdAt: new Date()
+                            }
+                        ]
+                    };
+                    localStorage.setItem(this.storageKey, JSON.stringify(initialData));
+                }
+            }
+
+            getData() {
+                return JSON.parse(localStorage.getItem(this.storageKey));
+            }
+
+            getUserByUsername(username) {
+                const data = this.getData();
+                return data.users.find(user => user.username === username);
+            }
+        }
+
+        const db = new MockDatabase();
+
+        // ========== PASSWORD TOGGLE FUNCTIONALITY ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordToggle = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const passwordIcon = passwordToggle.querySelector('i');
+            
+            // Toggle password visibility
+            passwordToggle.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle eye icon
+                if (type === 'text') {
+                    passwordIcon.classList.remove('fa-eye');
+                    passwordIcon.classList.add('fa-eye-slash');
+                    passwordToggle.setAttribute('aria-label', 'Sembunyikan password');
+                } else {
+                    passwordIcon.classList.remove('fa-eye-slash');
+                    passwordIcon.classList.add('fa-eye');
+                    passwordToggle.setAttribute('aria-label', 'Tampilkan password');
+                }
+            });
+            
+            // Load logo
+            loadLogo();
+            
+            // Focus on username field
+            document.getElementById('username').focus();
+        });
+
+        // ========== LOGIN FUNCTIONALITY ==========
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const loginButton = document.getElementById('loginButton');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            // Reset error message
+            errorMessage.classList.remove('show');
+            
+            // Validate inputs
+            if (!username) {
+                showError('Username harus diisi');
+                document.getElementById('username').focus();
+                return;
+            }
+            
+            if (!password) {
+                showError('Password harus diisi');
+                document.getElementById('password').focus();
+                return;
+            }
+            
+            // Show loading
+            loadingOverlay.classList.add('show');
+            loginButton.disabled = true;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Check credentials
+                const user = db.getUserByUsername(username);
+                
+                if (!user) {
+                    hideLoading();
+                    showError('Username tidak ditemukan');
+                    return;
+                }
+                
+                if (user.password !== password) {
+                    hideLoading();
+                    showError('Password salah');
+                    return;
+                }
+                
+                // Login successful
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('lastLogin', new Date().toISOString());
+                
+                // Show success message
+                errorMessage.style.background = 'linear-gradient(135deg, var(--secondary) 0%, #0DA674 100%)';
+                errorText.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 8px;"></i> Login berhasil! Mengarahkan ke aplikasi...';
+                errorMessage.classList.add('show');
+                
+                // Redirect to main app
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                
+            }, 1500); // Simulate network delay
+            
+            function showError(message) {
+                errorMessage.style.background = 'linear-gradient(135deg, var(--danger) 0%, #DC2626 100%)';
+                errorText.textContent = message;
+                errorMessage.classList.add('show');
+                
+                // Shake animation on error
+                errorMessage.style.animation = 'none';
+                setTimeout(() => {
+                    errorMessage.style.animation = 'slideDown 0.3s ease, shake 0.5s ease';
+                }, 10);
+            }
+            
+            function hideLoading() {
+                loadingOverlay.classList.remove('show');
+                loginButton.disabled = false;
+            }
+        });
+
+        // Add shake animation for error
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ========== LOGO LOADING ==========
+        function loadLogo() {
+            const logoPaths = [
+                'img/logosmkda.png',
+                'img/logo.png',
+                'assets/logo.png',
+                'logo.png'
+            ];
+
+            const loadLogoImage = (path) => {
+                const img = new Image();
+                img.onload = () => {
+                    document.querySelector('.fallback-logo').innerHTML = `<img src="${path}" alt="SMK Darul Abror">`;
+                };
+                img.onerror = () => {
+                    console.log(`Logo not found at: ${path}`);
+                };
+                img.src = path;
+            };
+
+            logoPaths.forEach(path => loadLogoImage(path));
+        }
+
+        // ========== ENTER KEY SUPPORT ==========
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('loginButton').disabled) {
+                // Submit form if not already submitting
+                if (!document.getElementById('loadingOverlay').classList.contains('show')) {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+
+        // ========== INPUT VALIDATION STYLING ==========
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            // Add focus styling
+            input.addEventListener('focus', function() {
+                this.parentElement.parentElement.querySelector('.form-label').style.color = 'var(--primary)';
+                this.parentElement.querySelector('.input-icon').style.color = 'var(--primary)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.parentElement.querySelector('.form-label').style.color = 'var(--gray-700)';
+                this.parentElement.querySelector('.input-icon').style.color = 'var(--primary)';
+            });
+            
+            // Add validation styling
+            input.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.style.borderColor = 'var(--primary)';
+                    this.style.background = 'white';
+                } else {
+                    this.style.borderColor = 'var(--gray-200)';
+                    this.style.background = 'var(--gray-100)';
+                }
+            });
+        });
+
+        // ========== REMEMBER LAST USERNAME ==========
+        // Save username on input
+        document.getElementById('username').addEventListener('input', function(e) {
+            localStorage.setItem('lastUsername', e.target.value);
+        });
+
+        // Load last username if exists
+        const lastUsername = localStorage.getItem('lastUsername');
+        if (lastUsername) {
+            document.getElementById('username').value = lastUsername;
+        }
+    </script>
+</body>
+</html>

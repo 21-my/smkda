@@ -1,0 +1,87 @@
+/* Dark Theme */
+.dark-theme {
+    background: #121212;
+    color: #ffffff;
+}
+
+.dark-theme .app-header {
+    background: #1e1e1e;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.dark-theme .attendance-status,
+.dark-theme .time-info,
+.dark-theme .month-selector,
+.dark-theme .calendar,
+.dark-theme .attendance-details,
+.dark-theme .about-card,
+.dark-theme .modal-content {
+    background: #1e1e1e;
+    color: #ffffff;
+}
+
+.dark-theme .time-row,
+.dark-theme .detail-item,
+.dark-theme .setting-item {
+    border-color: #333;
+}
+
+.dark-theme .gps-status {
+    background: #2d2d2d;
+    color: #aaa;
+}
+
+.dark-theme .bottom-nav {
+    background: #1e1e1e;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+}
+
+.dark-theme .nav-btn {
+    color: #aaa;
+}
+
+.dark-theme .nav-btn.active {
+    color: #667eea;
+}
+
+.dark-theme .calendar-day:hover {
+    background: #2d2d2d;
+}
+
+.dark-theme .detail-item:hover {
+    background: #2d2d2d;
+}
+
+.dark-theme .setting-item:hover {
+    background: #2d2d2d;
+}
+
+.dark-theme .modal-header,
+.dark-theme .modal-body {
+    background: #1e1e1e;
+}
+
+.dark-theme .modal-header h3,
+.dark-theme .setting-info h4 {
+    color: #ffffff;
+}
+
+.dark-theme .setting-info p {
+    color: #aaa;
+}
+
+.dark-theme .detail-time {
+    color: #aaa;
+}
+
+.dark-theme .profile-info p {
+    color: #aaa;
+}
+
+.dark-theme ::-webkit-scrollbar-track {
+    background: #2d2d2d;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb {
+    background: #667eea;
+}

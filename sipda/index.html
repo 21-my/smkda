@@ -1,0 +1,4755 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SIPDA - SMK Darul Abror</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="img/logosmkda.png">
+    <style>
+        /* ========== VARIABLES & RESET ========== */
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338CA;
+            --primary-light: #6366F1;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 6px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 40px -10px rgb(0 0 0 / 0.15);
+            --radius-sm: 0.375rem;
+            --radius: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+            --header-height: 56px;
+            --bottom-nav-height: 70px;
+        }
+
+        .dark-theme {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --primary-light: #818CF8;
+            --light: #1F2937;
+            --gray-100: #374151;
+            --gray-200: #4B5563;
+            --gray-300: #6B7280;
+            --gray-400: #9CA3AF;
+            --gray-500: #D1D5DB;
+            --gray-600: #E5E7EB;
+            --gray-700: #F3F4F6;
+            --gray-800: #F9FAFB;
+            --gray-900: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: 16px;
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: var(--light);
+            color: var(--gray-900);
+            line-height: 1.5;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        /* ========== LAYOUT & CONTAINERS ========== */
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            background: var(--light);
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ========== LOADING SCREEN ========== */
+        .loading-screen {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .loading-container {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+        }
+
+        .loading-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .logo-large {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-large .fallback-logo {
+            font-size: 3.5rem;
+            color: white;
+        }
+
+        .loading-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .loading-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .loading-spinner .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .loading-spinner p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        /* ========== MAIN APP ========== */
+        .app-header {
+            height: var(--header-height);
+            padding: 0 16px;
+            background: var(--light);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 36px;
+            height: 36px;
+            overflow: hidden;
+        }
+
+        .header-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .header-logo .fallback-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .app-header h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            letter-spacing: -0.3px;
+        }
+
+        .profile-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-700);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-btn:hover {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .profile-btn i {
+            font-size: 1.3rem;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: var(--bottom-nav-height);
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            height: 100%;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-content {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ========== ATTENDANCE PAGE ========== */
+        .attendance-container {
+            padding: 20px 16px;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 180px;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .profile-info {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .profile-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-text h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .profile-text p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+        }
+
+        .time-card {
+            background: linear-gradient(135deg, white 0%, var(--gray-50) 100%);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark-theme .time-card {
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border-color: var(--gray-200);
+        }
+
+        .current-time {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .current-date {
+            font-size: 1rem;
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+
+        .attendance-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .dark-theme .attendance-card {
+            background: var(--gray-100);
+            border-color: var(--gray-200);
+        }
+
+        .attendance-status {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .status-label {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-time {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .status-badge.present { background: linear-gradient(135deg, var(--secondary) 0%, #0DA674 100%); color: white; }
+        .status-badge.late { background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%); color: white; }
+        .status-badge.absent { background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%); color: white; }
+        .status-badge.no-out { background: linear-gradient(135deg, var(--info) 0%, #2563EB 100%); color: white; }
+        .status-badge.default { background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%); color: var(--gray-700); }
+
+        .office-hours {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .time-slot {
+            text-align: center;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .dark-theme .time-slot {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+        }
+
+        .time-slot:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-light);
+        }
+
+        .time-slot .label {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .time-slot .time {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+        }
+
+        /* ========== ATTENDANCE OPTIONS ========== */
+        .attendance-options {
+            margin: 24px 0;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 360px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .attendance-option {
+            padding: 16px;
+            background: linear-gradient(135deg, white 0%, var(--gray-50) 100%);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dark-theme .attendance-option {
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border-color: var(--gray-300);
+        }
+
+        .attendance-option.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .attendance-option i {
+            font-size: 1.5rem;
+            color: var(--gray-600);
+            transition: var(--transition);
+        }
+
+        .attendance-option.active i {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .attendance-option span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            transition: var(--transition);
+        }
+
+        .attendance-option.active span {
+            color: var(--primary);
+        }
+
+        /* Form Styles */
+        .permission-form {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid var(--gray-200);
+            display: none;
+            animation: slideDown 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dark-theme .permission-form {
+            background: var(--gray-100);
+            border-color: var(--gray-300);
+        }
+
+        .permission-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-hint i {
+            font-size: 0.8rem;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            color: var(--gray-800);
+            background: white;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .dark-theme .form-select {
+            background: var(--gray-200);
+            border-color: var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            color: var(--gray-800);
+            background: white;
+            resize: vertical;
+            min-height: 100px;
+            transition: var(--transition);
+        }
+
+        .dark-theme .form-textarea {
+            background: var(--gray-200);
+            border-color: var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .permission-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            color: var(--gray-700);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dark-theme .btn-cancel {
+            background: linear-gradient(135deg, var(--gray-300) 0%, var(--gray-400) 100%);
+            color: var(--gray-600);
+        }
+
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, var(--gray-300) 0%, var(--gray-400) 100%);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ========== CAMERA MODAL ========== */
+        .camera-modal .modal-content {
+            width: 95%;
+            max-width: 450px;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .camera-container {
+            position: relative;
+            background: black;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+        }
+
+        .camera-view {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            pointer-events: none;
+        }
+
+        .camera-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            pointer-events: all;
+        }
+
+        .camera-instructions {
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            pointer-events: all;
+        }
+
+        .camera-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .camera-btn::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: pulse-ring 2s infinite;
+        }
+
+        .camera-btn i {
+            font-size: 1.8rem;
+            color: var(--gray-800);
+        }
+
+        .camera-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .captured-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .photo-actions {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 20px;
+            pointer-events: all;
+        }
+
+        .photo-btn {
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-retake {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            color: var(--gray-700);
+        }
+
+        .btn-use {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        /* ========== ACTION BUTTONS ========== */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .fingerprint-icon {
+            font-size: 2.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .btn-secondary {
+            padding: 16px;
+            background: linear-gradient(135deg, white 0%, var(--gray-50) 100%);
+            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .dark-theme .btn-secondary {
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border-color: var(--gray-300);
+            color: var(--gray-600);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .gps-status {
+            padding: 12px;
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-top: 12px;
+            border: 1px solid transparent;
+        }
+
+        .dark-theme .gps-status {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+        }
+
+        .gps-status i {
+            color: var(--secondary);
+        }
+
+        .gps-status .error {
+            color: var(--danger);
+        }
+
+        /* ========== RECAP PAGE ========== */
+        .recap-container {
+            padding: 20px 16px;
+        }
+
+        .month-header {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark-theme .month-header {
+            background: var(--gray-100);
+            border-color: var(--gray-200);
+        }
+
+        .month-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .month-nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-700);
+        }
+
+        .month-nav-btn:hover {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .recap-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn-export {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--secondary) 0%, #0DA674 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .calendar-btn {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        .calendar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .attendance-summary {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .dark-theme .attendance-summary {
+            background: var(--gray-100);
+            border-color: var(--gray-200);
+        }
+
+        .attendance-summary h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .dark-theme .stat-card {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--gray-300);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .stat-card.present .stat-value { color: var(--secondary); }
+        .stat-card.late .stat-value { color: var(--warning); }
+        .stat-card.absent .stat-value { color: var(--danger); }
+        .stat-card.no-out .stat-value { color: var(--info); }
+        .stat-card.sick .stat-value { color: #8B5CF6; }
+        .stat-card.permit .stat-value { color: #EC4899; }
+        .stat-card.wfh .stat-value { color: #14B8A6; }
+
+        /* ========== ABOUT PAGE ========== */
+        .about-container {
+            padding: 20px 16px;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .about-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .about-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .about-logo .fallback-logo {
+            font-size: 2.2rem;
+            color: var(--primary);
+        }
+
+        .about-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .about-header p {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .about-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .about-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .dark-theme .about-section {
+            background: var(--gray-100);
+            border-color: var(--gray-200);
+        }
+
+        .about-section h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .about-section h3 i {
+            color: var(--primary);
+        }
+
+        .about-section p {
+            color: var(--gray-700);
+            line-height: 1.6;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .about-section ul {
+            padding-left: 20px;
+            color: var(--gray-700);
+            font-size: 0.95rem;
+        }
+
+        .about-section li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .version-info {
+            text-align: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-200);
+            margin-top: 12px;
+            color: var(--gray-600);
+            font-size: 0.85rem;
+        }
+
+        /* ========== ENHANCED BOTTOM NAVIGATION ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            border-top: 1px solid var(--gray-200);
+            padding: 12px 20px;
+            padding-bottom: calc(12px + var(--safe-area-inset-bottom));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.1);
+            height: var(--bottom-nav-height);
+            flex-shrink: 0;
+        }
+
+        .dark-theme .bottom-nav {
+            background: rgba(31, 41, 55, 0.98);
+            border-top: 1px solid var(--gray-700);
+            box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--gray-400);
+            cursor: pointer;
+            padding: 8px 12px;
+            transition: var(--transition);
+            position: relative;
+            flex: 1;
+            border-radius: var(--radius-lg);
+            min-width: 60px;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            border-radius: 0 0 2px 2px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item.active::before {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .dark-theme .nav-item.active {
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        .nav-item .nav-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            transition: var(--transition);
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            color: var(--gray-600);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dark-theme .nav-item .nav-icon {
+            background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
+            color: var(--gray-400);
+        }
+
+        .nav-item.active .nav-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            transform: translateY(-6px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-item .nav-icon i {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item.active .nav-icon i {
+            transform: scale(1.1);
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--primary);
+            font-weight: 700;
+            transform: translateY(2px);
+        }
+
+        /* Nav Item Hover Effects */
+        .nav-item:hover:not(.active) {
+            transform: translateY(-2px);
+        }
+
+        .nav-item:hover:not(.active) .nav-icon {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .dark-theme .nav-item:hover:not(.active) .nav-icon {
+            background: linear-gradient(135deg, var(--gray-700) 0%, var(--gray-800) 100%);
+        }
+
+        /* ========== MODALS & SHEETS ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--light);
+            border-radius: var(--radius-xl);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .close-modal {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-600);
+        }
+
+        .close-modal:hover {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 77px);
+        }
+
+        /* Calendar Modal */
+        .calendar-container {
+            padding: 16px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            padding: 8px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border: 2px solid transparent;
+        }
+
+        .dark-theme .calendar-day {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+        }
+
+        .calendar-day:hover {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            transform: translateY(-2px);
+        }
+
+        .dark-theme .calendar-day:hover {
+            background: linear-gradient(135deg, var(--gray-300) 0%, var(--gray-400) 100%);
+        }
+
+        .calendar-day.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .calendar-day-number {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .calendar-day-status {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 6px;
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .calendar-day.empty:hover {
+            background: transparent;
+            transform: none;
+        }
+
+        /* Bottom Sheet - Enhanced */
+        .bottom-sheet-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .bottom-sheet-overlay.active {
+            display: block;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--light);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            box-shadow: var(--shadow-xl);
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .bottom-sheet.active {
+            transform: translateY(0);
+        }
+
+        .bottom-sheet-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid var(--gray-200);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .sheet-handle {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: var(--gray-300);
+            border-radius: 2px;
+        }
+
+        .bottom-sheet-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .bottom-sheet-subtitle {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        .bottom-sheet-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 24px 24px;
+        }
+
+        .sheet-actions {
+            padding: 16px 24px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Export Options Sheet */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .export-option {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            border-radius: var(--radius-lg);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dark-theme .export-option {
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+        }
+
+        .export-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .export-option i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .export-option span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        /* Enhanced Attendance Details */
+        .attendance-detail-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: var(--transition);
+        }
+
+        .attendance-detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .attendance-detail-item:hover {
+            background: var(--gray-100);
+            margin: 0 -24px;
+            padding: 16px 24px;
+        }
+
+        .dark-theme .attendance-detail-item:hover {
+            background: var(--gray-200);
+        }
+
+        .detail-status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .detail-date {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .detail-type {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .detail-type.present { background: linear-gradient(135deg, var(--secondary) 0%, #0DA674 100%); color: white; }
+        .detail-type.late { background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%); color: white; }
+        .detail-type.absent { background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%); color: white; }
+        .detail-type.no-out { background: linear-gradient(135deg, var(--info) 0%, #2563EB 100%); color: white; }
+        .detail-type.sick { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: white; }
+        .detail-type.permit { background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%); color: white; }
+        .detail-type.wfh { background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%); color: white; }
+
+        .detail-time {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 6px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .detail-notes {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            background: var(--gray-100);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            margin-top: 6px;
+        }
+
+        .dark-theme .detail-notes {
+            background: var(--gray-200);
+        }
+
+        /* Settings Modal */
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-200);
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: var(--radius);
+        }
+
+        .settings-item:hover {
+            background: var(--gray-100);
+            margin: 0 -20px;
+            padding: 14px 20px;
+        }
+
+        .dark-theme .settings-item:hover {
+            background: var(--gray-200);
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .settings-info i {
+            font-size: 1.1rem;
+            color: var(--primary);
+            width: 22px;
+        }
+
+        .settings-text h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .settings-text p {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        /* Enhanced Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 54px;
+            height: 28px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--gray-300) 0%, var(--gray-400) 100%);
+            transition: .4s;
+            border-radius: 34px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-theme .slider {
+            background: linear-gradient(135deg, var(--gray-600) 0%, var(--gray-700) 100%);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background: linear-gradient(135deg, white 0%, var(--gray-100) 100%);
+            transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            background: linear-gradient(135deg, white 0%, var(--gray-50) 100%);
+        }
+
+        /* Add pulsing effect when toggled */
+        input:checked + .slider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0.3;
+            animation: pulse 0.4s ease-out;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+                height: 0;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                height: auto;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== UTILITIES ========== */
+        .text-center { text-align: center; }
+        .text-primary { color: var(--primary); }
+        .text-secondary { color: var(--secondary); }
+        .text-danger { color: var(--danger); }
+        .text-warning { color: var(--warning); }
+        .text-info { color: var(--info); }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--gray-300);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+            transition: var(--transition);
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 480px) {
+            html {
+                font-size: 15px;
+            }
+            
+            .container {
+                padding: 0 14px;
+            }
+            
+            .current-time {
+                font-size: 2.5rem;
+            }
+            
+            .status-time {
+                font-size: 2rem;
+            }
+            
+            .nav-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .bottom-nav {
+                padding: 8px 14px;
+                padding-bottom: calc(8px + var(--safe-area-inset-bottom));
+            }
+        }
+
+        @media (max-width: 360px) {
+            html {
+                font-size: 14px;
+            }
+            
+            .current-time {
+                font-size: 2.2rem;
+            }
+            
+            .status-time {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* ========== SCROLLBAR ========== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="screen loading-screen active">
+        <div class="container">
+            <div class="loading-container">
+                <div class="loading-header">
+                    <div class="logo-large">
+                        <div class="fallback-logo">
+                            <i class="fas fa-school"></i>
+                        </div>
+                    </div>
+                    <h1>SIPDA</h1>
+                    <p>Sistem Presensi Digital SMK Darul Abror</p>
+                </div>
+                
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Memuat aplikasi...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appScreen" class="screen">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="header-logo">
+                    <div class="fallback-logo">
+                        <i class="fas fa-school"></i>
+                    </div>
+                </div>
+                <h1>SIPDA</h1>
+            </div>
+            <div class="header-right">
+                <button class="profile-btn" id="profileButton">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Attendance Page -->
+            <div id="attendancePage" class="page active">
+                <div class="page-content">
+                    <div class="container">
+                        <div class="attendance-container">
+                            <!-- Profile Card -->
+                            <div class="profile-card">
+                                <div class="profile-info">
+                                    <div class="profile-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="profile-text">
+                                        <h2 id="userName">Budi Santoso</h2>
+                                        <p id="userRole">Guru Matematika - NIP: 198304152006041002</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Current Time -->
+                            <div class="time-card">
+                                <div class="current-time" id="currentTime">00:00:00</div>
+                                <div class="current-date" id="currentDate">Senin, 1 Januari 2024</div>
+                            </div>
+
+                            <!-- Attendance Status -->
+                            <div class="attendance-card">
+                                <div class="attendance-status">
+                                    <div class="status-label">Pukul Kehadiran</div>
+                                    <div class="status-time" id="attendanceTime">--:--</div>
+                                    <div class="status-badge default" id="attendanceStatus">BELUM PRESENSI</div>
+                                </div>
+                                
+                                <div class="office-hours">
+                                    <div class="time-slot">
+                                        <div class="label">Jam Masuk</div>
+                                        <div class="time" id="inTime">07:00</div>
+                                    </div>
+                                    <div class="time-slot">
+                                        <div class="label">Jam Pulang</div>
+                                        <div class="time" id="outTime">16:00</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Attendance Options -->
+                            <div class="attendance-options">
+                                <h3 style="font-size: 1rem; color: var(--gray-700); margin-bottom: 12px;">Pilih Jenis Presensi:</h3>
+                                <div class="options-grid">
+                                    <div class="attendance-option active" data-type="wfo">
+                                        <i class="fas fa-building"></i>
+                                        <span>Kantor (WFO)</span>
+                                    </div>
+                                    <div class="attendance-option" data-type="wfh">
+                                        <i class="fas fa-home"></i>
+                                        <span>Rumah (WFH)</span>
+                                    </div>
+                                    <div class="attendance-option" data-type="sick">
+                                        <i class="fas fa-procedures"></i>
+                                        <span>Sakit</span>
+                                    </div>
+                                    <div class="attendance-option" data-type="permit">
+                                        <i class="fas fa-file-signature"></i>
+                                        <span>Izin</span>
+                                    </div>
+                                    <div class="attendance-option" data-type="others">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                        <span>Lainnya</span>
+                                    </div>
+                                </div>
+
+                                <!-- Sakit Form -->
+                                <div class="permission-form" id="sickForm">
+                                    <div class="form-group">
+                                        <label for="sickNote">Keterangan Sakit</label>
+                                        <textarea class="form-textarea" id="sickNote" 
+                                                 placeholder="Berikan keterangan sakit Anda... (minimal 10 karakter)"
+                                                 minlength="10" required></textarea>
+                                        <div class="form-hint">
+                                            <i class="fas fa-info-circle"></i> Sertakan gejala atau diagnosa jika ada
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="permission-actions">
+                                        <button type="button" class="btn-cancel" id="cancelSick">Batal</button>
+                                        <button type="button" class="btn-submit" id="submitSick">Laporkan Sakit</button>
+                                    </div>
+                                </div>
+
+                                <!-- Izin Form -->
+                                <div class="permission-form" id="permitForm">
+                                    <div class="form-group">
+                                        <label for="permissionType">Jenis Izin</label>
+                                        <select class="form-select" id="permissionType" required>
+                                            <option value="">Pilih jenis izin</option>
+                                            <option value="izin_pribadi">Izin Pribadi</option>
+                                            <option value="keluarga">Keluarga</option>
+                                            <option value="acara_kantor">Acara Kantor</option>
+                                            <option value="pelatihan">Pelatihan/Seminar</option>
+                                            <option value="dinas">Dinas Luar</option>
+                                            <option value="cuti">Cuti Tahunan</option>
+                                            <option value="lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="permissionNote">Keterangan Izin</label>
+                                        <textarea class="form-textarea" id="permissionNote" 
+                                                 placeholder="Berikan keterangan izin Anda... (minimal 10 karakter)"
+                                                 minlength="10" required></textarea>
+                                    </div>
+                                    
+                                    <div class="permission-actions">
+                                        <button type="button" class="btn-cancel" id="cancelPermit">Batal</button>
+                                        <button type="button" class="btn-submit" id="submitPermit">Ajukan Izin</button>
+                                    </div>
+                                </div>
+
+                                <!-- Lainnya Form -->
+                                <div class="permission-form" id="othersForm">
+                                    <div class="form-group">
+                                        <label for="otherType">Jenis Kehadiran</label>
+                                        <select class="form-select" id="otherType" required>
+                                            <option value="">Pilih jenis</option>
+                                            <option value="rapat">Rapat</option>
+                                            <option value="penugasan">Penugasan Khusus</option>
+                                            <option value="kegiatan">Kegiatan Sekolah</option>
+                                            <option value="sosial">Kegiatan Sosial</option>
+                                            <option value="darurat">Keadaan Darurat</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="otherNote">Keterangan</label>
+                                        <textarea class="form-textarea" id="otherNote" 
+                                                 placeholder="Berikan keterangan... (minimal 10 karakter)"
+                                                 minlength="10" required></textarea>
+                                    </div>
+                                    
+                                    <div class="permission-actions">
+                                        <button type="button" class="btn-cancel" id="cancelOther">Batal</button>
+                                        <button type="button" class="btn-submit" id="submitOther">Simpan</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons">
+                                <button class="btn-primary" id="attendanceBtn">
+                                    <div class="fingerprint-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                    <span>AMBIL FOTO PRESENSI</span>
+                                </button>
+                                
+                                <button class="btn-secondary" id="refreshGPS">
+                                    <i class="fas fa-sync-alt" id="gpsIcon"></i>
+                                    <span>Refresh GPS</span>
+                                </button>
+                                
+                                <div class="gps-status">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span id="gpsStatusText">Memuat lokasi...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recap Page -->
+            <div id="recapPage" class="page">
+                <div class="page-content">
+                    <div class="container">
+                        <div class="recap-container">
+                            <!-- Month Header -->
+                            <div class="month-header">
+                                <button class="month-nav-btn" id="prevMonth">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <h2 id="currentMonth">Januari 2024</h2>
+                                <button class="month-nav-btn" id="nextMonth">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+
+                            <!-- Export Actions -->
+                            <div class="recap-actions">
+                                <button class="btn-export" id="exportDataBtn">
+                                    <i class="fas fa-file-export"></i>
+                                    <span>Ekspor Data</span>
+                                </button>
+                                <button class="calendar-btn" id="showCalendarBtn">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>Lihat Kalender</span>
+                                </button>
+                            </div>
+
+                            <!-- Attendance Summary -->
+                            <div class="attendance-summary">
+                                <h3>Ringkasan Kehadiran</h3>
+                                <div class="stats-grid">
+                                    <div class="stat-card present">
+                                        <div class="stat-value" id="presentCount">0</div>
+                                        <div class="stat-label">Hadir Tepat</div>
+                                    </div>
+                                    <div class="stat-card late">
+                                        <div class="stat-value" id="lateCount">0</div>
+                                        <div class="stat-label">Terlambat</div>
+                                    </div>
+                                    <div class="stat-card absent">
+                                        <div class="stat-value" id="absentCount">0</div>
+                                        <div class="stat-label">Alpa</div>
+                                    </div>
+                                    <div class="stat-card no-out">
+                                        <div class="stat-value" id="noOutCount">0</div>
+                                        <div class="stat-label">TAP</div>
+                                    </div>
+                                    <div class="stat-card sick">
+                                        <div class="stat-value" id="sickCount">0</div>
+                                        <div class="stat-label">Sakit</div>
+                                    </div>
+                                    <div class="stat-card permit">
+                                        <div class="stat-value" id="permitCount">0</div>
+                                        <div class="stat-label">Izin</div>
+                                    </div>
+                                    <div class="stat-card wfh">
+                                        <div class="stat-value" id="wfhCount">0</div>
+                                        <div class="stat-label">WFH</div>
+                                    </div>
+                                    <div class="stat-card" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white;">
+                                        <div class="stat-value" id="attendancePercentage">0%</div>
+                                        <div class="stat-label">Kehadiran</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Show Details Button -->
+                            <div style="text-align: center; margin-top: 24px;">
+                                <button class="btn-primary" id="showDetailsBtn" style="width: 80%; max-width: 300px; margin: 0 auto;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                                        <i class="fas fa-list-alt" style="font-size: 1.2rem;"></i>
+                                        <span>LIHAT DETAIL KEHADIRAN</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Page -->
+            <div id="aboutPage" class="page">
+                <div class="page-content">
+                    <div class="container">
+                        <div class="about-container">
+                            <!-- About Header -->
+                            <div class="about-header">
+                                <div class="about-logo">
+                                    <div class="fallback-logo">
+                                        <i class="fas fa-school"></i>
+                                    </div>
+                                </div>
+                                <h2>SIPDA</h2>
+                                <p>Sistem Presensi Digital</p>
+                            </div>
+
+                            <!-- About Content -->
+                            <div class="about-content">
+                                <div class="about-section">
+                                    <h3><i class="fas fa-info-circle"></i> Tentang Aplikasi</h3>
+                                    <p>Sistem Presensi Digital (SIPDA) SMK Darul Abror merupakan solusi teknologi untuk mencatat kehadiran guru dan karyawan secara real-time dengan integrasi GPS dan verifikasi foto.</p>
+                                </div>
+
+                                <div class="about-section">
+                                    <h3><i class="fas fa-school"></i> SMK Darul Abror</h3>
+                                    <p>SMK Darul Abror berkomitmen menghasilkan lulusan yang kompeten, berakhlak mulia, dan siap menghadapi tantangan industri.</p>
+                                </div>
+
+                                <div class="about-section">
+                                    <h3><i class="fas fa-feather-alt"></i> Fitur Utama</h3>
+                                    <ul>
+                                        <li>Presensi dengan verifikasi foto dan GPS</li>
+                                        <li>Pilihan WFO, WFH, Sakit, dan Izin</li>
+                                        <li>Rekap kehadiran bulanan lengkap</li>
+                                        <li>Ekspor data ke Excel dan PDF</li>
+                                        <li>Mode terang/gelap</li>
+                                        <li>Keamanan data terenkripsi</li>
+                                    </ul>
+                                </div>
+
+                                <div class="about-section">
+                                    <div class="version-info">
+                                        <p><strong>SIPDA v3.0.0</strong></p>
+                                        <p>© 2024 SMK Darul Abror</p>
+                                        <p>All rights reserved</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item" data-page="recapPage">
+                <div class="nav-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="nav-label">Rekap</div>
+            </button>
+            
+            <button class="nav-item active" data-page="attendancePage">
+                <div class="nav-icon">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                <div class="nav-label">Absensi</div>
+            </button>
+            
+            <button class="nav-item" data-page="aboutPage">
+                <div class="nav-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="nav-label">Tentang</div>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Pengaturan</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="settings-item" id="themeSetting">
+                    <div class="settings-info">
+                        <i class="fas fa-palette"></i>
+                        <div class="settings-text">
+                            <h4>Mode Tampilan</h4>
+                            <p>Ubah tema aplikasi</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="settings-item" id="editNameBtn">
+                    <div class="settings-info">
+                        <i class="fas fa-user-edit"></i>
+                        <div class="settings-text">
+                            <h4>Ganti Nama Profil</h4>
+                            <p id="currentNameDisplay">Budi Santoso</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+
+                <div class="settings-item" id="changePasswordBtn">
+                    <div class="settings-info">
+                        <i class="fas fa-key"></i>
+                        <div class="settings-text">
+                            <h4>Ganti Password</h4>
+                            <p>Perbarui keamanan akun</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+
+                <a href="admin.html" style="text-decoration: none; color: inherit;">
+                    <div class="settings-item" id="adminSection" style="display: none;">
+                        <div class="settings-info">
+                            <i class="fas fa-user-shield"></i>
+                            <div class="settings-text">
+                                <h4>Admin Panel</h4>
+                                <p>Kelola sistem</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar Modal -->
+    <div class="modal-overlay" id="calendarModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="calendarMonthTitle">Januari 2024</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="month-nav-btn" id="calendarPrevMonth">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div></div>
+                        <button class="month-nav-btn" id="calendarNextMonth">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Modal -->
+    <div class="modal-overlay" id="cameraModal">
+        <div class="modal-content camera-modal">
+            <div class="camera-container">
+                <video class="camera-view" id="cameraView" autoplay playsinline></video>
+                <img class="captured-photo" id="capturedPhoto" alt="Captured Photo">
+                
+                <div class="camera-overlay">
+                    <div class="camera-header">
+                        <button class="close-modal" style="background: rgba(0,0,0,0.5); color: white;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="camera-instructions" id="cameraInstructions">
+                            Ambil foto untuk presensi
+                        </div>
+                        <div></div>
+                    </div>
+                    
+                    <div class="camera-controls">
+                        <button class="camera-btn" id="takePhotoBtn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="photo-actions" id="photoActions" style="display: none;">
+                    <button class="photo-btn btn-retake" id="retakePhotoBtn">
+                        <i class="fas fa-redo"></i> Ambil Ulang
+                    </button>
+                    <button class="photo-btn btn-use" id="usePhotoBtn">
+                        <i class="fas fa-check"></i> Gunakan Foto
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Options Sheet -->
+    <div class="bottom-sheet-overlay" id="exportSheetOverlay"></div>
+    <div class="bottom-sheet" id="exportSheet">
+        <div class="bottom-sheet-header">
+            <div class="sheet-handle"></div>
+            <div class="bottom-sheet-title">Ekspor Data Kehadiran</div>
+            <div class="bottom-sheet-subtitle" id="exportMonth">Januari 2024</div>
+        </div>
+        <div class="bottom-sheet-content">
+            <p style="color: var(--gray-600); margin-bottom: 20px; text-align: center;">
+                Pilih format untuk mengekspor data kehadiran bulan ini:
+            </p>
+            
+            <div class="export-options">
+                <div class="export-option" data-format="excel">
+                    <i class="fas fa-file-excel"></i>
+                    <span>Excel (.xlsx)</span>
+                </div>
+                <div class="export-option" data-format="pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>PDF (.pdf)</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 24px; color: var(--gray-600); font-size: 0.85rem;">
+                <p><strong>Format Laporan:</strong></p>
+                <ul style="padding-left: 20px; margin-top: 8px;">
+                    <li>No</li>
+                    <li>No Pegawai</li>
+                    <li>Nama</li>
+                    <li>Status Pegawai</li>
+                    <li>Hadir</li>
+                    <li>Sakit</li>
+                    <li>Ijin</li>
+                    <li>Alpha</li>
+                    <li>Dispen</li>
+                    <li>Cuti</li>
+                    <li>Terlambat</li>
+                    <li>WFH</li>
+                    <li>% Kehadiran</li>
+                </ul>
+            </div>
+        </div>
+        <div class="sheet-actions">
+            <button class="btn-cancel" id="cancelExport" style="flex: 1;">Batal</button>
+        </div>
+    </div>
+
+    <!-- Attendance Details Sheet -->
+    <div class="bottom-sheet-overlay" id="attendanceSheetOverlay"></div>
+    <div class="bottom-sheet" id="attendanceSheet">
+        <div class="bottom-sheet-header">
+            <div class="sheet-handle"></div>
+            <div class="bottom-sheet-title">Detail Kehadiran</div>
+            <div class="bottom-sheet-subtitle" id="attendanceSheetMonth">Januari 2024</div>
+        </div>
+        <div class="bottom-sheet-content" id="attendanceSheetContent">
+            <!-- Attendance details will be loaded here -->
+        </div>
+        <div class="sheet-actions">
+            <button class="btn-cancel" id="closeAttendanceSheet" style="flex: 1;">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== GLOBAL VARIABLES ==========
+        const monthNames = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+
+        const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+        // Koordinat SMK Darul Abror dari Google Maps
+        const SCHOOL_LOCATION = {
+            lat: -6.208763,  // Koordinat dari Google Maps link
+            lng: 106.845599,
+            radius: 100 // radius dalam meter
+        };
+
+        // ========== MOCK DATABASE ==========
+        class MockDatabase {
+            constructor() {
+                this.storageKey = 'sipda_db_v4';
+                this.initData();
+            }
+
+            initData() {
+                if (!localStorage.getItem(this.storageKey)) {
+                    const today = new Date();
+                    const currentMonth = today.getMonth();
+                    const currentYear = today.getFullYear();
+                    
+                    // Generate sample attendance data for current month
+                    const sampleAttendances = [];
+                    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                    
+                    const attendanceTypes = ['wfo', 'wfh', 'sick', 'permit'];
+                    const statusTypes = ['present', 'late', 'absent'];
+                    
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const date = new Date(currentYear, currentMonth, day);
+                        const dayOfWeek = date.getDay();
+                        
+                        // Skip weekends for sample data
+                        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                            const attendanceType = attendanceTypes[Math.floor(Math.random() * attendanceTypes.length)];
+                            const status = attendanceType === 'absent' ? 'absent' : 
+                                         Math.random() > 0.3 ? 'present' : 'late';
+                            
+                            const inTime = new Date(currentYear, currentMonth, day, 
+                                status === 'present' ? 6 + Math.floor(Math.random() * 2) : 
+                                status === 'late' ? 7 + Math.floor(Math.random() * 3) : null,
+                                Math.floor(Math.random() * 60));
+                            
+                            let outTime = null;
+                            let isTap = false;
+                            
+                            if (attendanceType !== 'sick' && attendanceType !== 'permit' && 
+                                status !== 'absent' && Math.random() > 0.3) {
+                                outTime = new Date(currentYear, currentMonth, day, 
+                                    15 + Math.floor(Math.random() * 3), 
+                                    Math.floor(Math.random() * 60));
+                            } else if (attendanceType !== 'sick' && attendanceType !== 'permit') {
+                                isTap = true;
+                            }
+                            
+                            const notes = attendanceType === 'permit' ? 
+                                ['Ijin keluarga', 'Keperluan pribadi', 'Acara keluarga'][Math.floor(Math.random() * 3)] : '';
+                            
+                            sampleAttendances.push({
+                                id: `att_${currentYear}${String(currentMonth + 1).padStart(2, '0')}${String(day).padStart(2, '0')}`,
+                                userId: '1',
+                                date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+                                inTime: inTime,
+                                outTime: outTime,
+                                type: attendanceType,
+                                status: status,
+                                isTap: isTap,
+                                notes: notes,
+                                location: {
+                                    lat: SCHOOL_LOCATION.lat + (Math.random() - 0.5) * 0.01,
+                                    lng: SCHOOL_LOCATION.lng + (Math.random() - 0.5) * 0.01,
+                                    accuracy: Math.floor(Math.random() * 30) + 5,
+                                    distance: Math.floor(Math.random() * 80) + 5
+                                },
+                                photo: null
+                            });
+                        }
+                    }
+
+                    const initialData = {
+                        users: [
+                            { 
+                                id: '1', 
+                                username: 'guru001', 
+                                password: 'smkda123',
+                                name: 'Budi Santoso',
+                                employeeId: '198304152006041002',
+                                role: 'Guru Matematika',
+                                status: 'PNS',
+                                email: 'budi.santoso@smkda.sch.id',
+                                phone: '081234567890',
+                                isAdmin: false,
+                                createdAt: new Date()
+                            },
+                            { 
+                                id: '2', 
+                                username: 'admin', 
+                                password: 'admin123',
+                                name: 'Administrator',
+                                employeeId: '197801012000121001',
+                                role: 'Administrator Sistem',
+                                status: 'PNS',
+                                email: 'admin@smkda.sch.id',
+                                phone: '081298765432',
+                                isAdmin: true,
+                                createdAt: new Date()
+                            }
+                        ],
+                        attendance: sampleAttendances,
+                        settings: {
+                            officeHours: { in: '07:00', out: '16:00' },
+                            lateThreshold: 1, // minutes
+                            gpsRadius: 100,
+                            workingDays: [1, 2, 3, 4, 5]
+                        }
+                    };
+                    localStorage.setItem(this.storageKey, JSON.stringify(initialData));
+                }
+            }
+
+            getData() {
+                return JSON.parse(localStorage.getItem(this.storageKey));
+            }
+
+            saveData(data) {
+                localStorage.setItem(this.storageKey, JSON.stringify(data));
+            }
+
+            getUserByUsername(username) {
+                const data = this.getData();
+                return data.users.find(user => user.username === username);
+            }
+
+            updateUser(userId, updates) {
+                const data = this.getData();
+                const userIndex = data.users.findIndex(user => user.id === userId);
+                if (userIndex !== -1) {
+                    data.users[userIndex] = { ...data.users[userIndex], ...updates, updatedAt: new Date() };
+                    this.saveData(data);
+                    return true;
+                }
+                return false;
+            }
+
+            addAttendance(attendance) {
+                const data = this.getData();
+                data.attendance.push(attendance);
+                this.saveData(data);
+                return attendance;
+            }
+
+            updateAttendance(attendanceId, updates) {
+                const data = this.getData();
+                const attendanceIndex = data.attendance.findIndex(a => a.id === attendanceId);
+                if (attendanceIndex !== -1) {
+                    data.attendance[attendanceIndex] = { 
+                        ...data.attendance[attendanceIndex], 
+                        ...updates 
+                    };
+                    this.saveData(data);
+                    return true;
+                }
+                return false;
+            }
+
+            getAttendanceByUserAndDate(userId, date) {
+                const data = this.getData();
+                return data.attendance.find(a => 
+                    a.userId === userId && a.date === date
+                );
+            }
+
+            getAttendanceByUserAndMonth(userId, year, month) {
+                const data = this.getData();
+                return data.attendance.filter(a => {
+                    if (a.userId !== userId) return false;
+                    const attendanceDate = new Date(a.date);
+                    return attendanceDate.getFullYear() === year && 
+                           attendanceDate.getMonth() + 1 === month;
+                });
+            }
+
+            getAttendanceStats(userId, year, month) {
+                const attendances = this.getAttendanceByUserAndMonth(userId, year, month);
+                const stats = {
+                    present: 0,
+                    late: 0,
+                    absent: 0,
+                    noOut: 0,
+                    sick: 0,
+                    permit: 0,
+                    wfh: 0,
+                    wfo: 0,
+                    total: attendances.length
+                };
+
+                attendances.forEach(att => {
+                    switch(att.type) {
+                        case 'wfo':
+                            stats.wfo++;
+                            break;
+                        case 'wfh':
+                            stats.wfh++;
+                            break;
+                        case 'sick':
+                            stats.sick++;
+                            break;
+                        case 'permit':
+                            stats.permit++;
+                            break;
+                    }
+
+                    if (att.status === 'present') {
+                        if (att.outTime) stats.present++;
+                        else if (!att.isTap) stats.noOut++;
+                    } else if (att.status === 'late') {
+                        if (att.outTime) stats.late++;
+                        else if (!att.isTap) stats.noOut++;
+                    } else if (att.status === 'absent') {
+                        stats.absent++;
+                    }
+                });
+
+                // Calculate attendance percentage
+                const totalWorkingDays = this.getWorkingDaysInMonth(year, month);
+                const totalPresent = stats.present + stats.late + stats.wfh;
+                stats.percentage = totalWorkingDays > 0 ? 
+                    Math.round((totalPresent / totalWorkingDays) * 100) : 0;
+
+                return stats;
+            }
+
+            getWorkingDaysInMonth(year, month) {
+                const date = new Date(year, month - 1, 1);
+                const daysInMonth = new Date(year, month, 0).getDate();
+                let workingDays = 0;
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    date.setDate(day);
+                    const dayOfWeek = date.getDay();
+                    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                        workingDays++;
+                    }
+                }
+
+                return workingDays;
+            }
+
+            getExportData(userId, year, month) {
+                const user = this.getData().users.find(u => u.id === userId);
+                const stats = this.getAttendanceStats(userId, year, month);
+                
+                return {
+                    no: 1,
+                    employeeId: user.employeeId,
+                    name: user.name,
+                    status: user.status,
+                    present: stats.present,
+                    sick: stats.sick,
+                    permit: stats.permit,
+                    absent: stats.absent,
+                    dispensation: 0, // Not implemented
+                    leave: 0, // Not implemented
+                    late: stats.late,
+                    wfh: stats.wfh,
+                    percentage: stats.percentage
+                };
+            }
+        }
+
+        const db = new MockDatabase();
+
+        // ========== AUTHENTICATION ==========
+        class Auth {
+            static currentUser = null;
+
+            static login(username, password) {
+                const user = db.getUserByUsername(username);
+                
+                if (!user) {
+                    return { success: false, error: 'Username tidak ditemukan' };
+                }
+
+                if (user.password !== password) {
+                    return { success: false, error: 'Password salah' };
+                }
+
+                this.currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('lastLogin', new Date().toISOString());
+                return { success: true, user };
+            }
+
+            static logout() {
+                this.currentUser = null;
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('isLoggedIn');
+                return { success: true };
+            }
+
+            static getCurrentUser() {
+                if (!this.currentUser) {
+                    const savedUser = localStorage.getItem('currentUser');
+                    if (savedUser) {
+                        this.currentUser = JSON.parse(savedUser);
+                    }
+                }
+                return this.currentUser;
+            }
+
+            static isLoggedIn() {
+                return localStorage.getItem('isLoggedIn') === 'true' && this.getCurrentUser() !== null;
+            }
+        }
+
+        // ========== UI COMPONENTS ==========
+        class UIComponents {
+            static showToast(message, type = 'info', duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                toast.innerHTML = `
+                    <div class="toast-content">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+
+                // Add styles if not already added
+                if (!document.querySelector('#toast-styles')) {
+                    const style = document.createElement('style');
+                    style.id = 'toast-styles';
+                    style.textContent = `
+                        .toast {
+                            position: fixed;
+                            top: 20px;
+                            left: 50%;
+                            transform: translateX(-50%) translateY(-100px);
+                            background: var(--light);
+                            color: var(--gray-900);
+                            padding: 16px 24px;
+                            border-radius: var(--radius-lg);
+                            box-shadow: var(--shadow-xl);
+                            z-index: 9999;
+                            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            border-left: 4px solid var(--primary);
+                            max-width: 90%;
+                            width: auto;
+                        }
+                        .toast-success { border-left-color: var(--secondary); }
+                        .toast-error { border-left-color: var(--danger); }
+                        .toast-warning { border-left-color: var(--warning); }
+                        .toast-info { border-left-color: var(--info); }
+                        .toast-content {
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                        }
+                        .toast i { font-size: 1.2rem; }
+                        .toast.show {
+                            transform: translateX(-50%) translateY(0);
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+
+                document.body.appendChild(toast);
+
+                // Animate in
+                setTimeout(() => toast.classList.add('show'), 10);
+
+                // Remove after duration
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+
+            static showLoading(message = 'Memuat...') {
+                const loading = document.createElement('div');
+                loading.className = 'loading-overlay';
+                loading.innerHTML = `
+                    <div class="loading-content">
+                        <div class="spinner"></div>
+                        <div class="loading-text">${message}</div>
+                    </div>
+                `;
+
+                // Add styles if not already added
+                if (!document.querySelector('#loading-styles')) {
+                    const style = document.createElement('style');
+                    style.id = 'loading-styles';
+                    style.textContent = `
+                        .loading-overlay {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: rgba(0, 0, 0, 0.5);
+                            backdrop-filter: blur(4px);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            z-index: 9999;
+                            animation: fadeIn 0.3s ease;
+                        }
+                        .loading-content {
+                            background: var(--light);
+                            padding: 24px;
+                            border-radius: var(--radius-xl);
+                            text-align: center;
+                            box-shadow: var(--shadow-xl);
+                            animation: slideUp 0.3s ease;
+                        }
+                        .loading-text {
+                            margin-top: 12px;
+                            color: var(--gray-700);
+                            font-weight: 500;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+
+                document.body.appendChild(loading);
+                return loading;
+            }
+
+            static hideLoading(loadingElement) {
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+            }
+
+            static confirm(message, callback) {
+                const confirmModal = document.createElement('div');
+                confirmModal.className = 'confirm-modal';
+                confirmModal.innerHTML = `
+                    <div class="confirm-content">
+                        <div class="confirm-message">${message}</div>
+                        <div class="confirm-actions">
+                            <button class="btn-cancel">Batal</button>
+                            <button class="btn-confirm">Ya</button>
+                        </div>
+                    </div>
+                `;
+
+                // Add styles if not already added
+                if (!document.querySelector('#confirm-styles')) {
+                    const style = document.createElement('style');
+                    style.id = 'confirm-styles';
+                    style.textContent = `
+                        .confirm-modal {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: rgba(0, 0, 0, 0.5);
+                            backdrop-filter: blur(4px);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            z-index: 9999;
+                            animation: fadeIn 0.3s ease;
+                            padding: 20px;
+                        }
+                        .confirm-content {
+                            background: var(--light);
+                            padding: 24px;
+                            border-radius: var(--radius-xl);
+                            box-shadow: var(--shadow-xl);
+                            animation: slideUp 0.3s ease;
+                            max-width: 400px;
+                            width: 100%;
+                        }
+                        .confirm-message {
+                            color: var(--gray-900);
+                            font-size: 1rem;
+                            margin-bottom: 20px;
+                            text-align: center;
+                        }
+                        .confirm-actions {
+                            display: flex;
+                            gap: 12px;
+                        }
+                        .confirm-actions button {
+                            flex: 1;
+                            padding: 12px;
+                            border-radius: var(--radius);
+                            font-size: 0.95rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: var(--transition);
+                            border: none;
+                        }
+                        .btn-cancel {
+                            background: var(--gray-200);
+                            color: var(--gray-700);
+                        }
+                        .btn-confirm {
+                            background: var(--primary);
+                            color: white;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+
+                document.body.appendChild(confirmModal);
+
+                const cancelBtn = confirmModal.querySelector('.btn-cancel');
+                const confirmBtn = confirmModal.querySelector('.btn-confirm');
+
+                cancelBtn.addEventListener('click', () => {
+                    confirmModal.remove();
+                });
+
+                confirmBtn.addEventListener('click', () => {
+                    callback();
+                    confirmModal.remove();
+                });
+            }
+        }
+
+        // ========== APPLICATION CORE ==========
+        class App {
+            static init() {
+                this.setupEventListeners();
+                this.setupTime();
+                this.loadLogo();
+                
+                // Check if user is logged in
+                if (Auth.isLoggedIn()) {
+                    this.showAppScreen();
+                    this.loadUserProfile();
+                    Attendance.init();
+                    UIComponents.showToast('Selamat datang kembali!', 'success');
+                } else {
+                    // Redirect to login
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }
+            }
+
+            static setupEventListeners() {
+                // Navigation
+                this.setupNavigation();
+
+                // Profile button
+                document.getElementById('profileButton').addEventListener('click', () => {
+                    this.openSettings();
+                });
+
+                // Close modal buttons
+                document.querySelectorAll('.close-modal').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const modal = e.target.closest('.modal-overlay');
+                        if (modal) modal.classList.remove('active');
+                        
+                        // Stop camera if camera modal
+                        if (modal && modal.id === 'cameraModal') {
+                            Attendance.stopCamera();
+                        }
+                    });
+                });
+
+                // Click outside modal to close
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.classList.remove('active');
+                            
+                            // Stop camera if camera modal
+                            if (modal.id === 'cameraModal') {
+                                Attendance.stopCamera();
+                            }
+                        }
+                    });
+                });
+
+                // Theme toggle
+                const themeToggle = document.getElementById('themeToggle');
+                themeToggle.addEventListener('change', (e) => {
+                    this.toggleTheme(e.target.checked);
+                });
+
+                // Load saved theme
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    themeToggle.checked = true;
+                }
+
+                // Settings buttons
+                document.getElementById('logoutBtn').addEventListener('click', () => this.handleLogout());
+                document.getElementById('editNameBtn').addEventListener('click', () => this.showEditName());
+                document.getElementById('changePasswordBtn').addEventListener('click', () => this.showChangePassword());
+                
+                // Make whole settings item clickable for theme toggle
+                document.getElementById('themeSetting').addEventListener('click', (e) => {
+                    if (!e.target.closest('.switch')) {
+                        const toggle = document.getElementById('themeToggle');
+                        toggle.checked = !toggle.checked;
+                        toggle.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+
+            static setupNavigation() {
+                const navItems = document.querySelectorAll('.nav-item');
+                
+                navItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const pageId = item.getAttribute('data-page');
+                        
+                        // Update active nav item
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        item.classList.add('active');
+                        
+                        // Show selected page
+                        document.querySelectorAll('.page').forEach(page => {
+                            page.classList.remove('active');
+                        });
+                        document.getElementById(pageId).classList.add('active');
+
+                        // Initialize page specific features
+                        if (pageId === 'recapPage') {
+                            Recap.init();
+                        }
+                    });
+                });
+            }
+
+            static setupTime() {
+                function updateTime() {
+                    const now = new Date();
+                    const timeElement = document.getElementById('currentTime');
+                    const dateElement = document.getElementById('currentDate');
+                    
+                    if (timeElement) {
+                        timeElement.textContent = now.toLocaleTimeString('id-ID', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false
+                        });
+                    }
+                    
+                    if (dateElement) {
+                        dateElement.textContent = now.toLocaleDateString('id-ID', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                    }
+                }
+                
+                updateTime();
+                setInterval(updateTime, 1000);
+            }
+
+            static loadLogo() {
+                // Try to load logo from local file
+                const logoPaths = [
+                    'img/logosmkda.png',
+                    'img/logo.png',
+                    'assets/logo.png',
+                    'logo.png'
+                ];
+
+                const loadLogoImage = (path) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Replace fallback logos with actual image
+                        document.querySelectorAll('.fallback-logo').forEach(logo => {
+                            logo.innerHTML = `<img src="${path}" alt="SMK Darul Abror">`;
+                        });
+                    };
+                    img.onerror = () => {
+                        // Keep fallback icon if image fails to load
+                        console.log(`Logo not found at: ${path}`);
+                    };
+                    img.src = path;
+                };
+
+                // Try each path
+                logoPaths.forEach(path => loadLogoImage(path));
+            }
+
+            static async handleLogout() {
+                UIComponents.confirm('Apakah Anda yakin ingin keluar?', () => {
+                    const result = Auth.logout();
+                    if (result.success) {
+                        UIComponents.showToast('Logout berhasil', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 1000);
+                    }
+                });
+            }
+
+            static showLoadingScreen() {
+                document.getElementById('loadingScreen').classList.add('active');
+                document.getElementById('appScreen').classList.remove('active');
+            }
+
+            static showAppScreen() {
+                document.getElementById('loadingScreen').classList.remove('active');
+                document.getElementById('appScreen').classList.add('active');
+            }
+
+            static loadUserProfile() {
+                const user = Auth.getCurrentUser();
+                if (user) {
+                    document.getElementById('userName').textContent = user.name || user.username;
+                    document.getElementById('userRole').textContent = `${user.role} - NIP: ${user.employeeId}`;
+                    document.getElementById('currentNameDisplay').textContent = user.name || user.username;
+                    
+                    // Check if user is admin
+                    if (user.isAdmin) {
+                        document.getElementById('adminSection').style.display = 'flex';
+                    }
+                }
+            }
+
+            static openSettings() {
+                document.getElementById('settingsModal').classList.add('active');
+            }
+
+            static toggleTheme(isDark) {
+                if (isDark) {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                UIComponents.showToast(`Mode ${isDark ? 'gelap' : 'terang'} diaktifkan`, 'info');
+            }
+
+            static showEditName() {
+                const currentName = document.getElementById('userName').textContent;
+                const newName = prompt('Masukkan nama baru:', currentName);
+                
+                if (newName && newName.trim() !== currentName) {
+                    const user = Auth.getCurrentUser();
+                    if (user) {
+                        const trimmedName = newName.trim();
+                        db.updateUser(user.id, { name: trimmedName });
+                        Auth.currentUser.name = trimmedName;
+                        localStorage.setItem('currentUser', JSON.stringify(Auth.currentUser));
+                        
+                        document.getElementById('userName').textContent = trimmedName;
+                        document.getElementById('currentNameDisplay').textContent = trimmedName;
+                        
+                        UIComponents.showToast('Nama berhasil diperbarui', 'success');
+                    }
+                }
+            }
+
+            static showChangePassword() {
+                const user = Auth.getCurrentUser();
+                
+                const currentPassword = prompt('Masukkan password saat ini:');
+                if (!currentPassword) return;
+
+                if (user.password !== currentPassword) {
+                    UIComponents.showToast('Password saat ini salah', 'error');
+                    return;
+                }
+
+                const newPassword = prompt('Masukkan password baru (min. 6 karakter):');
+                if (!newPassword || newPassword.length < 6) {
+                    UIComponents.showToast('Password minimal 6 karakter', 'error');
+                    return;
+                }
+
+                const confirmPassword = prompt('Konfirmasi password baru:');
+                if (newPassword !== confirmPassword) {
+                    UIComponents.showToast('Konfirmasi password tidak cocok', 'error');
+                    return;
+                }
+
+                db.updateUser(user.id, { password: newPassword });
+                user.password = newPassword;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                UIComponents.showToast('Password berhasil diperbarui', 'success');
+            }
+        }
+
+        // ========== ATTENDANCE MODULE ==========
+        class Attendance {
+            static currentLocation = null;
+            static isLoadingGPS = false;
+            static currentAttendanceType = 'wfo';
+            static cameraStream = null;
+            static capturedPhoto = null;
+            
+            static init() {
+                this.setupEventListeners();
+                this.loadAttendanceStatus();
+                this.startGPS();
+                
+                // Check if already checked in today
+                this.checkTodayAttendance();
+                
+                // Setup attendance options
+                this.setupAttendanceOptions();
+            }
+            
+            static setupEventListeners() {
+                // Attendance button
+                const attendanceBtn = document.getElementById('attendanceBtn');
+                if (attendanceBtn) {
+                    attendanceBtn.addEventListener('click', () => {
+                        this.openCamera();
+                    });
+                }
+                
+                // GPS refresh button
+                const refreshBtn = document.getElementById('refreshGPS');
+                if (refreshBtn) {
+                    refreshBtn.addEventListener('click', () => {
+                        this.startGPS(true);
+                    });
+                }
+                
+                // Camera events
+                document.getElementById('takePhotoBtn')?.addEventListener('click', () => {
+                    this.capturePhoto();
+                });
+                
+                document.getElementById('retakePhotoBtn')?.addEventListener('click', () => {
+                    this.retakePhoto();
+                });
+                
+                document.getElementById('usePhotoBtn')?.addEventListener('click', () => {
+                    this.processAttendance();
+                });
+                
+                // Permission form cancel buttons
+                document.getElementById('cancelSick')?.addEventListener('click', () => {
+                    this.hideAllForms();
+                    this.resetToWFO();
+                });
+                
+                document.getElementById('cancelPermit')?.addEventListener('click', () => {
+                    this.hideAllForms();
+                    this.resetToWFO();
+                });
+                
+                document.getElementById('cancelOther')?.addEventListener('click', () => {
+                    this.hideAllForms();
+                    this.resetToWFO();
+                });
+                
+                // Permission form submit buttons
+                document.getElementById('submitSick')?.addEventListener('click', () => {
+                    this.submitSick();
+                });
+                
+                document.getElementById('submitPermit')?.addEventListener('click', () => {
+                    this.submitPermit();
+                });
+                
+                document.getElementById('submitOther')?.addEventListener('click', () => {
+                    this.submitOther();
+                });
+            }
+            
+            static setupAttendanceOptions() {
+                const options = document.querySelectorAll('.attendance-option');
+                
+                options.forEach(option => {
+                    option.addEventListener('click', () => {
+                        // Remove active class from all options
+                        options.forEach(opt => opt.classList.remove('active'));
+                        
+                        // Add active class to clicked option
+                        option.classList.add('active');
+                        
+                        // Update current attendance type
+                        const type = option.getAttribute('data-type');
+                        this.currentAttendanceType = type;
+                        
+                        // Hide all forms first
+                        this.hideAllForms();
+                        
+                        // Show appropriate form
+                        if (type === 'sick') {
+                            document.getElementById('sickForm').classList.add('active');
+                        } else if (type === 'permit') {
+                            document.getElementById('permitForm').classList.add('active');
+                        } else if (type === 'others') {
+                            document.getElementById('othersForm').classList.add('active');
+                        }
+                        
+                        // Update attendance button text
+                        this.updateAttendanceButtonText(type);
+                    });
+                });
+            }
+            
+            static updateAttendanceButtonText(type) {
+                const attendanceBtn = document.getElementById('attendanceBtn');
+                if (!attendanceBtn) return;
+                
+                const buttonText = {
+                    'wfo': 'AMBIL FOTO PRESENSI',
+                    'wfh': 'PRESENSI WFH',
+                    'sick': 'LAPORKAN SAKIT',
+                    'permit': 'AJUKAN IZIN',
+                    'others': 'SIMPAN KEHADIRAN'
+                }[type] || 'AMBIL FOTO PRESENSI';
+                
+                attendanceBtn.querySelector('span').textContent = buttonText;
+            }
+            
+            static hideAllForms() {
+                document.getElementById('sickForm').classList.remove('active');
+                document.getElementById('permitForm').classList.remove('active');
+                document.getElementById('othersForm').classList.remove('active');
+            }
+            
+            static resetToWFO() {
+                const options = document.querySelectorAll('.attendance-option');
+                options.forEach(opt => opt.classList.remove('active'));
+                options[0].classList.add('active');
+                this.currentAttendanceType = 'wfo';
+                this.updateAttendanceButtonText('wfo');
+            }
+            
+            // Fungsi untuk menghitung jarak antara dua koordinat (Haversine formula)
+            static calculateDistance(lat1, lon1, lat2, lon2) {
+                const R = 6371e3; // Radius bumi dalam meter
+                const φ1 = lat1 * Math.PI / 180;
+                const φ2 = lat2 * Math.PI / 180;
+                const Δφ = (lat2 - lat1) * Math.PI / 180;
+                const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+                const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                          Math.cos(φ1) * Math.cos(φ2) *
+                          Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+                return R * c; // jarak dalam meter
+            }
+            
+            static async startGPS(forceRefresh = false) {
+                if (this.isLoadingGPS && !forceRefresh) return;
+                
+                this.isLoadingGPS = true;
+                const gpsIcon = document.getElementById('gpsIcon');
+                const gpsStatusText = document.getElementById('gpsStatusText');
+                const refreshBtn = document.getElementById('refreshGPS');
+                
+                if (gpsIcon) gpsIcon.classList.add('fa-spin');
+                if (gpsStatusText) gpsStatusText.textContent = 'Mengkalibrasi GPS...';
+                if (refreshBtn) refreshBtn.disabled = true;
+                
+                try {
+                    if (navigator.geolocation) {
+                        // Use real GPS if available
+                        const position = await new Promise((resolve, reject) => {
+                            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                                enableHighAccuracy: true,
+                                timeout: 10000,
+                                maximumAge: 0
+                            });
+                        });
+                        
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
+                        const accuracy = position.coords.accuracy;
+                        
+                        // Hitung jarak dari sekolah
+                        const distance = this.calculateDistance(
+                            userLat, userLng,
+                            SCHOOL_LOCATION.lat, SCHOOL_LOCATION.lng
+                        );
+                        
+                        this.currentLocation = {
+                            lat: userLat,
+                            lng: userLng,
+                            accuracy: accuracy,
+                            distance: distance,
+                            isWithinRadius: distance <= SCHOOL_LOCATION.radius
+                        };
+                        
+                        // Update UI
+                        if (gpsStatusText) {
+                            const status = this.currentLocation.isWithinRadius ? 
+                                `<span style="color: var(--secondary)">Dalam Radius (${Math.round(distance)}m dari sekolah)</span>` :
+                                `<span style="color: var(--warning)">Di Luar Radius (${Math.round(distance)}m dari sekolah)</span>`;
+                            
+                            gpsStatusText.innerHTML = `
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${status}
+                                ${this.currentLocation.isWithinRadius ? 
+                                    '<i class="fas fa-check-circle" style="color: var(--secondary); margin-left: 5px;"></i>' : 
+                                    '<i class="fas fa-exclamation-triangle" style="color: var(--warning); margin-left: 5px;"></i>'}
+                            `;
+                        }
+                        
+                        if (this.currentLocation.isWithinRadius) {
+                            UIComponents.showToast('GPS berhasil dikalibrasi', 'success');
+                        } else {
+                            UIComponents.showToast('Anda berada di luar radius sekolah', 'warning');
+                        }
+                        
+                    } else {
+                        // Fallback to mock location
+                        throw new Error('GPS tidak didukung');
+                    }
+                } catch (error) {
+                    console.log('GPS error, using mock location:', error);
+                    
+                    // Mock GPS location near school
+                    this.currentLocation = {
+                        lat: SCHOOL_LOCATION.lat + (Math.random() - 0.5) * 0.001,
+                        lng: SCHOOL_LOCATION.lng + (Math.random() - 0.5) * 0.001,
+                        accuracy: Math.floor(Math.random() * 25) + 5,
+                        distance: Math.floor(Math.random() * 80) + 5,
+                        isWithinRadius: true
+                    };
+                    
+                    if (gpsStatusText) {
+                        gpsStatusText.innerHTML = `
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span style="color: var(--secondary)">Dalam Radius (${this.currentLocation.distance}m dari sekolah)</span>
+                            <i class="fas fa-check-circle" style="color: var(--secondary); margin-left: 5px;"></i>
+                        `;
+                    }
+                    
+                    UIComponents.showToast('GPS berhasil dikalibrasi', 'success');
+                } finally {
+                    this.isLoadingGPS = false;
+                    if (gpsIcon) gpsIcon.classList.remove('fa-spin');
+                    if (refreshBtn) refreshBtn.disabled = false;
+                }
+            }
+            
+            static async requestCameraPermission() {
+                try {
+                    // Check if camera is supported
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        throw new Error('Kamera tidak didukung di perangkat ini');
+                    }
+                    
+                    // Request camera permission
+                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'user' },
+                        audio: false 
+                    });
+                    
+                    // Stop the stream immediately
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Camera permission error:', error);
+                    
+                    if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                        throw new Error('Akses kamera ditolak. Silakan aktifkan di pengaturan browser');
+                    } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                        throw new Error('Tidak ada kamera yang ditemukan');
+                    } else {
+                        throw new Error('Tidak dapat mengakses kamera: ' + error.message);
+                    }
+                }
+            }
+            
+            static checkTodayAttendance() {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+                
+                const today = new Date().toISOString().split('T')[0];
+                const attendance = db.getAttendanceByUserAndDate(user.id, today);
+                
+                if (attendance) {
+                    this.updateAttendanceDisplay(
+                        new Date(attendance.inTime),
+                        attendance.outTime ? 'out' : 'in',
+                        attendance.outTime ? new Date(attendance.outTime) : null
+                    );
+                    
+                    // Disable attendance button if already checked out
+                    if (attendance.outTime) {
+                        const attendanceBtn = document.getElementById('attendanceBtn');
+                        if (attendanceBtn) {
+                            attendanceBtn.disabled = true;
+                            attendanceBtn.innerHTML = `
+                                <div class="fingerprint-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <span>SUDAH PRESENSI HARI INI</span>
+                            `;
+                        }
+                    }
+                }
+            }
+            
+            static async openCamera() {
+                // Check camera permission first
+                try {
+                    await this.requestCameraPermission();
+                } catch (error) {
+                    UIComponents.showToast(error.message, 'error');
+                    return;
+                }
+                
+                // Check if already checked out today
+                const user = Auth.getCurrentUser();
+                const today = new Date().toISOString().split('T')[0];
+                const existing = db.getAttendanceByUserAndDate(user.id, today);
+                
+                if (existing && existing.outTime) {
+                    UIComponents.showToast('Anda sudah melakukan presensi hari ini', 'info');
+                    return;
+                }
+                
+                // For special types, check if form is filled
+                if (this.currentAttendanceType === 'sick') {
+                    const sickNote = document.getElementById('sickNote').value.trim();
+                    if (!sickNote || sickNote.length < 10) {
+                        UIComponents.showToast('Keterangan sakit minimal 10 karakter', 'warning');
+                        return;
+                    }
+                } else if (this.currentAttendanceType === 'permit') {
+                    const permissionType = document.getElementById('permissionType').value;
+                    const permissionNote = document.getElementById('permissionNote').value.trim();
+                    
+                    if (!permissionType) {
+                        UIComponents.showToast('Pilih jenis izin terlebih dahulu', 'warning');
+                        return;
+                    }
+                    
+                    if (!permissionNote || permissionNote.length < 10) {
+                        UIComponents.showToast('Keterangan izin minimal 10 karakter', 'warning');
+                        return;
+                    }
+                } else if (this.currentAttendanceType === 'others') {
+                    const otherType = document.getElementById('otherType').value;
+                    const otherNote = document.getElementById('otherNote').value.trim();
+                    
+                    if (!otherType) {
+                        UIComponents.showToast('Pilih jenis kehadiran terlebih dahulu', 'warning');
+                        return;
+                    }
+                    
+                    if (!otherNote || otherNote.length < 10) {
+                        UIComponents.showToast('Keterangan minimal 10 karakter', 'warning');
+                        return;
+                    }
+                } else if (this.currentAttendanceType === 'wfh') {
+                    // WFH requires confirmation
+                    UIComponents.confirm(
+                        'WFH membutuhkan persetujuan Kepala Sekolah. Lanjutkan?',
+                        () => {
+                            document.getElementById('cameraModal').classList.add('active');
+                            this.startCamera();
+                        }
+                    );
+                    return;
+                }
+                
+                // Check location for WFO
+                if (this.currentAttendanceType === 'wfo' && this.currentLocation) {
+                    if (!this.currentLocation.isWithinRadius) {
+                        UIComponents.confirm(
+                            `Anda berada ${Math.round(this.currentLocation.distance)}m dari sekolah (radius ${SCHOOL_LOCATION.radius}m). Apakah Anda yakin ingin melanjutkan?`,
+                            () => {
+                                document.getElementById('cameraModal').classList.add('active');
+                                this.startCamera();
+                            }
+                        );
+                        return;
+                    }
+                }
+                
+                document.getElementById('cameraModal').classList.add('active');
+                this.startCamera();
+            }
+            
+            static async startCamera() {
+                try {
+                    this.cameraStream = await navigator.mediaDevices.getUserMedia({
+                        video: { 
+                            facingMode: 'user',
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        },
+                        audio: false
+                    });
+                    
+                    const cameraView = document.getElementById('cameraView');
+                    if (cameraView) {
+                        cameraView.srcObject = this.cameraStream;
+                    }
+                    
+                    // Update instructions
+                    const instructions = document.getElementById('cameraInstructions');
+                    if (instructions) {
+                        instructions.textContent = 'Ambil foto untuk presensi';
+                    }
+                    
+                } catch (error) {
+                    console.error('Camera error:', error);
+                    UIComponents.showToast('Tidak dapat mengakses kamera', 'error');
+                    
+                    // If camera fails, proceed without photo
+                    this.capturedPhoto = null;
+                    this.processAttendance();
+                }
+            }
+            
+            static stopCamera() {
+                if (this.cameraStream) {
+                    this.cameraStream.getTracks().forEach(track => track.stop());
+                    this.cameraStream = null;
+                }
+                
+                const cameraView = document.getElementById('cameraView');
+                if (cameraView) {
+                    cameraView.srcObject = null;
+                }
+                
+                const capturedPhoto = document.getElementById('capturedPhoto');
+                if (capturedPhoto) {
+                    capturedPhoto.style.display = 'none';
+                }
+                
+                const photoActions = document.getElementById('photoActions');
+                if (photoActions) {
+                    photoActions.style.display = 'none';
+                }
+                
+                const takePhotoBtn = document.getElementById('takePhotoBtn');
+                if (takePhotoBtn) {
+                    takePhotoBtn.style.display = 'flex';
+                }
+            }
+            
+            static capturePhoto() {
+                const cameraView = document.getElementById('cameraView');
+                const capturedPhoto = document.getElementById('capturedPhoto');
+                const takePhotoBtn = document.getElementById('takePhotoBtn');
+                const photoActions = document.getElementById('photoActions');
+                
+                if (!cameraView || !capturedPhoto) return;
+                
+                // Create canvas to capture photo
+                const canvas = document.createElement('canvas');
+                canvas.width = cameraView.videoWidth;
+                canvas.height = cameraView.videoHeight;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
+                
+                // Add timestamp overlay
+                const now = new Date();
+                const timestamp = now.toLocaleString('id-ID', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                
+                ctx.font = '14px Arial';
+                ctx.fillStyle = 'white';
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 2;
+                ctx.textAlign = 'right';
+                
+                // Draw text with outline
+                ctx.strokeText(`SIPDA - ${timestamp}`, canvas.width - 20, canvas.height - 30);
+                ctx.fillText(`SIPDA - ${timestamp}`, canvas.width - 20, canvas.height - 30);
+                
+                // Convert to data URL
+                this.capturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
+                capturedPhoto.src = this.capturedPhoto;
+                
+                // Switch to photo preview
+                cameraView.style.display = 'none';
+                capturedPhoto.style.display = 'block';
+                takePhotoBtn.style.display = 'none';
+                photoActions.style.display = 'flex';
+                
+                // Update instructions
+                const instructions = document.getElementById('cameraInstructions');
+                if (instructions) {
+                    instructions.textContent = 'Foto berhasil diambil';
+                }
+                
+                // Stop camera stream
+                if (this.cameraStream) {
+                    this.cameraStream.getTracks().forEach(track => track.stop());
+                }
+            }
+            
+            static retakePhoto() {
+                const cameraView = document.getElementById('cameraView');
+                const capturedPhoto = document.getElementById('capturedPhoto');
+                const takePhotoBtn = document.getElementById('takePhotoBtn');
+                const photoActions = document.getElementById('photoActions');
+                
+                if (!cameraView || !capturedPhoto) return;
+                
+                // Switch back to camera view
+                cameraView.style.display = 'block';
+                capturedPhoto.style.display = 'none';
+                takePhotoBtn.style.display = 'flex';
+                photoActions.style.display = 'none';
+                
+                // Update instructions
+                const instructions = document.getElementById('cameraInstructions');
+                if (instructions) {
+                    instructions.textContent = 'Ambil foto untuk presensi';
+                }
+                
+                // Restart camera
+                this.startCamera();
+            }
+            
+            static async processAttendance() {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+                
+                const now = new Date();
+                const today = now.toISOString().split('T')[0];
+                
+                const existing = db.getAttendanceByUserAndDate(user.id, today);
+                
+                // Close camera modal
+                document.getElementById('cameraModal').classList.remove('active');
+                this.stopCamera();
+                
+                const loading = UIComponents.showLoading('Memproses presensi...');
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    UIComponents.hideLoading(loading);
+                    
+                    if (!existing) {
+                        // Record check-in
+                        const attendance = {
+                            id: `att_${Date.now()}`,
+                            userId: user.id,
+                            username: user.username,
+                            date: today,
+                            inTime: now,
+                            outTime: null,
+                            type: this.currentAttendanceType,
+                            status: this.calculateStatus(now),
+                            isTap: false,
+                            notes: this.getAttendanceNotes(),
+                            location: this.currentLocation,
+                            photo: this.capturedPhoto,
+                            createdAt: new Date()
+                        };
+                        
+                        db.addAttendance(attendance);
+                        this.updateAttendanceDisplay(now, 'in');
+                        
+                        // Reset forms
+                        this.resetForms();
+                        this.resetToWFO();
+                        
+                        // Update button for check-out
+                        const attendanceBtn = document.getElementById('attendanceBtn');
+                        if (attendanceBtn) {
+                            const buttonText = this.currentAttendanceType === 'wfo' ? 'AMBIL FOTO PULANG' :
+                                              this.currentAttendanceType === 'wfh' ? 'PRESENSI PULANG WFH' :
+                                              'SIMPAN KEHADIRAN';
+                            
+                            attendanceBtn.innerHTML = `
+                                <div class="fingerprint-icon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <span>${buttonText}</span>
+                            `;
+                        }
+                        
+                        UIComponents.showToast('Presensi masuk berhasil dicatat', 'success');
+                        
+                    } else if (!existing.outTime) {
+                        // Record check-out
+                        db.updateAttendance(existing.id, { 
+                            outTime: now,
+                            photo: this.capturedPhoto || existing.photo
+                        });
+                        
+                        this.updateAttendanceDisplay(new Date(existing.inTime), 'out', now);
+                        
+                        // Update button to disabled
+                        const attendanceBtn = document.getElementById('attendanceBtn');
+                        if (attendanceBtn) {
+                            attendanceBtn.disabled = true;
+                            attendanceBtn.innerHTML = `
+                                <div class="fingerprint-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <span>SUDAH PRESENSI HARI INI</span>
+                            `;
+                        }
+                        
+                        // Reset forms
+                        this.resetForms();
+                        this.resetToWFO();
+                        
+                        UIComponents.showToast('Presensi pulang berhasil dicatat', 'success');
+                        
+                    } else {
+                        UIComponents.showToast('Anda sudah melakukan presensi hari ini', 'info');
+                    }
+                    
+                    // Reset captured photo
+                    this.capturedPhoto = null;
+                    
+                    // Refresh recap page if active
+                    if (document.getElementById('recapPage').classList.contains('active')) {
+                        Recap.init();
+                    }
+                    
+                }, 1500);
+            }
+            
+            static resetForms() {
+                document.getElementById('sickNote').value = '';
+                document.getElementById('permissionType').value = '';
+                document.getElementById('permissionNote').value = '';
+                document.getElementById('otherType').value = '';
+                document.getElementById('otherNote').value = '';
+            }
+            
+            static calculateStatus(time) {
+                const hour = time.getHours();
+                const minute = time.getMinutes();
+                const totalMinutes = hour * 60 + minute;
+                
+                const startTime = 7 * 60; // 07:00
+                const lateThreshold = startTime + 1; // 1 minute after 07:00
+                
+                if (totalMinutes <= startTime) return 'present';
+                if (totalMinutes <= lateThreshold) return 'present'; // Within 1 minute grace period
+                return 'late';
+            }
+            
+            static getAttendanceNotes() {
+                if (this.currentAttendanceType === 'sick') {
+                    return `Sakit: ${document.getElementById('sickNote').value.trim()}`;
+                } else if (this.currentAttendanceType === 'permit') {
+                    const type = document.getElementById('permissionType').value;
+                    const note = document.getElementById('permissionNote').value.trim();
+                    return `${type}: ${note}`;
+                } else if (this.currentAttendanceType === 'others') {
+                    const type = document.getElementById('otherType').value;
+                    const note = document.getElementById('otherNote').value.trim();
+                    return `${type}: ${note}`;
+                }
+                return '';
+            }
+            
+            static submitSick() {
+                const sickNote = document.getElementById('sickNote').value.trim();
+                
+                if (!sickNote || sickNote.length < 10) {
+                    UIComponents.showToast('Keterangan sakit minimal 10 karakter', 'warning');
+                    return;
+                }
+                
+                UIComponents.showToast('Laporan sakit berhasil disimpan', 'success');
+                this.openCamera();
+            }
+            
+            static submitPermit() {
+                const type = document.getElementById('permissionType').value;
+                const note = document.getElementById('permissionNote').value.trim();
+                
+                if (!type) {
+                    UIComponents.showToast('Pilih jenis izin terlebih dahulu', 'warning');
+                    return;
+                }
+                
+                if (!note || note.length < 10) {
+                    UIComponents.showToast('Keterangan izin minimal 10 karakter', 'warning');
+                    return;
+                }
+                
+                UIComponents.showToast('Permohonan izin berhasil diajukan', 'success');
+                this.openCamera();
+            }
+            
+            static submitOther() {
+                const type = document.getElementById('otherType').value;
+                const note = document.getElementById('otherNote').value.trim();
+                
+                if (!type) {
+                    UIComponents.showToast('Pilih jenis kehadiran terlebih dahulu', 'warning');
+                    return;
+                }
+                
+                if (!note || note.length < 10) {
+                    UIComponents.showToast('Keterangan minimal 10 karakter', 'warning');
+                    return;
+                }
+                
+                UIComponents.showToast('Data kehadiran berhasil disimpan', 'success');
+                this.openCamera();
+            }
+            
+            static loadAttendanceStatus() {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+                
+                const today = new Date().toISOString().split('T')[0];
+                const attendance = db.getAttendanceByUserAndDate(user.id, today);
+                
+                if (attendance) {
+                    this.updateAttendanceDisplay(
+                        new Date(attendance.inTime),
+                        attendance.outTime ? 'out' : 'in',
+                        attendance.outTime ? new Date(attendance.outTime) : null
+                    );
+                } else {
+                    this.updateAttendanceDisplay(null, 'none');
+                }
+            }
+            
+            static updateAttendanceDisplay(inTime, type, outTime = null) {
+                const attendanceTime = document.getElementById('attendanceTime');
+                const attendanceStatus = document.getElementById('attendanceStatus');
+                
+                if (type === 'in' && inTime) {
+                    const timeString = inTime.toLocaleTimeString('id-ID', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    if (attendanceTime) attendanceTime.textContent = timeString;
+                    
+                    const status = this.calculateStatus(inTime);
+                    let statusText = '';
+                    let statusClass = '';
+                    
+                    switch(status) {
+                        case 'present':
+                            statusText = 'TEPAT WAKTU';
+                            statusClass = 'present';
+                            break;
+                        case 'late':
+                            statusText = 'TERLAMBAT';
+                            statusClass = 'late';
+                            break;
+                    }
+                    
+                    if (attendanceStatus) {
+                        attendanceStatus.textContent = statusText;
+                        attendanceStatus.className = `status-badge ${statusClass}`;
+                    }
+                    
+                } else if (type === 'out' && outTime) {
+                    const timeString = outTime.toLocaleTimeString('id-ID', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    if (attendanceTime) attendanceTime.textContent = timeString;
+                    
+                    if (attendanceStatus) {
+                        attendanceStatus.textContent = 'SUDAH PULANG';
+                        attendanceStatus.className = 'status-badge present';
+                    }
+                    
+                } else {
+                    if (attendanceTime) attendanceTime.textContent = '--:--';
+                    
+                    const now = new Date();
+                    const hour = now.getHours();
+                    
+                    if (attendanceStatus) {
+                        if (hour < 24) {
+                            attendanceStatus.textContent = 'BELUM PRESENSI';
+                            attendanceStatus.className = 'status-badge default';
+                        } else {
+                            attendanceStatus.textContent = 'ALPA';
+                            attendanceStatus.className = 'status-badge absent';
+                        }
+                    }
+                }
+            }
+        }
+
+        // ========== RECAP MODULE ==========
+        class Recap {
+            static currentDate = new Date();
+            static calendarDate = new Date();
+            
+            static init() {
+                this.setupEventListeners();
+                this.updateMonthDisplay();
+                this.loadStats();
+            }
+            
+            static setupEventListeners() {
+                // Month navigation
+                document.getElementById('prevMonth').addEventListener('click', () => {
+                    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+                    this.updateMonthDisplay();
+                    this.loadStats();
+                });
+                
+                document.getElementById('nextMonth').addEventListener('click', () => {
+                    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+                    this.updateMonthDisplay();
+                    this.loadStats();
+                });
+                
+                // Calendar button
+                document.getElementById('showCalendarBtn').addEventListener('click', () => {
+                    this.openCalendar();
+                });
+                
+                // Export button
+                document.getElementById('exportDataBtn').addEventListener('click', () => {
+                    this.openExportSheet();
+                });
+                
+                // Details button
+                document.getElementById('showDetailsBtn').addEventListener('click', () => {
+                    this.openAttendanceDetails();
+                });
+                
+                // Calendar navigation
+                document.getElementById('calendarPrevMonth').addEventListener('click', () => {
+                    this.calendarDate.setMonth(this.calendarDate.getMonth() - 1);
+                    this.generateCalendar();
+                });
+                
+                document.getElementById('calendarNextMonth').addEventListener('click', () => {
+                    this.calendarDate.setMonth(this.calendarDate.getMonth() + 1);
+                    this.generateCalendar();
+                });
+                
+                // Sheet overlays
+                document.getElementById('exportSheetOverlay').addEventListener('click', () => {
+                    this.closeExportSheet();
+                });
+                
+                document.getElementById('attendanceSheetOverlay').addEventListener('click', () => {
+                    this.closeAttendanceDetails();
+                });
+                
+                // Close buttons
+                document.getElementById('cancelExport').addEventListener('click', () => {
+                    this.closeExportSheet();
+                });
+                
+                document.getElementById('closeAttendanceSheet').addEventListener('click', () => {
+                    this.closeAttendanceDetails();
+                });
+                
+                // Export options
+                document.querySelectorAll('.export-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        const format = option.getAttribute('data-format');
+                        this.exportData(format);
+                    });
+                });
+                
+                // Sheet handles for drag
+                this.setupSheetDrag();
+            }
+            
+            static setupSheetDrag() {
+                const sheets = document.querySelectorAll('.bottom-sheet');
+                
+                sheets.forEach(sheet => {
+                    const handle = sheet.querySelector('.sheet-handle');
+                    if (!handle) return;
+                    
+                    let startY = 0;
+                    let startHeight = 0;
+                    
+                    handle.addEventListener('mousedown', startDrag);
+                    handle.addEventListener('touchstart', startDrag);
+                    
+                    function startDrag(e) {
+                        startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+                        startHeight = parseInt(document.documentElement.clientHeight * 0.85);
+                        
+                        document.addEventListener('mousemove', doDrag);
+                        document.addEventListener('touchmove', doDrag);
+                        document.addEventListener('mouseup', stopDrag);
+                        document.addEventListener('touchend', stopDrag);
+                    }
+                    
+                    function doDrag(e) {
+                        const y = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+                        const diff = startY - y;
+                        const newHeight = startHeight + diff;
+                        const maxHeight = window.innerHeight * 0.9;
+                        const minHeight = window.innerHeight * 0.4;
+                        
+                        if (newHeight > maxHeight || newHeight < minHeight) return;
+                        
+                        sheet.style.height = `${newHeight}px`;
+                    }
+                    
+                    function stopDrag() {
+                        document.removeEventListener('mousemove', doDrag);
+                        document.removeEventListener('touchmove', doDrag);
+                        document.removeEventListener('mouseup', stopDrag);
+                        document.removeEventListener('touchend', stopDrag);
+                        
+                        // Reset to default height after a delay
+                        setTimeout(() => {
+                            sheet.style.height = '';
+                        }, 300);
+                    }
+                });
+            }
+            
+            static updateMonthDisplay() {
+                const month = monthNames[this.currentDate.getMonth()];
+                const year = this.currentDate.getFullYear();
+                
+                document.getElementById('currentMonth').textContent = `${month} ${year}`;
+                document.getElementById('exportMonth').textContent = `${month} ${year}`;
+                document.getElementById('attendanceSheetMonth').textContent = `${month} ${year}`;
+            }
+            
+            static loadStats() {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+                
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth() + 1;
+                
+                const stats = db.getAttendanceStats(user.id, year, month);
+                
+                document.getElementById('presentCount').textContent = stats.present;
+                document.getElementById('lateCount').textContent = stats.late;
+                document.getElementById('absentCount').textContent = stats.absent;
+                document.getElementById('noOutCount').textContent = stats.noOut;
+                document.getElementById('sickCount').textContent = stats.sick;
+                document.getElementById('permitCount').textContent = stats.permit;
+                document.getElementById('wfhCount').textContent = stats.wfh;
+                document.getElementById('attendancePercentage').textContent = `${stats.percentage}%`;
+            }
+            
+            static openCalendar() {
+                this.generateCalendar();
+                document.getElementById('calendarModal').classList.add('active');
+            }
+            
+            static generateCalendar() {
+                const calendarGrid = document.getElementById('calendarGrid');
+                if (!calendarGrid) return;
+                
+                const year = this.calendarDate.getFullYear();
+                const month = this.calendarDate.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const totalDays = lastDay.getDate();
+                const startingDay = firstDay.getDay();
+                
+                // Update calendar title
+                const calendarMonthTitle = document.getElementById('calendarMonthTitle');
+                if (calendarMonthTitle) {
+                    calendarMonthTitle.textContent = `${monthNames[month]} ${year}`;
+                }
+                
+                // Clear grid
+                calendarGrid.innerHTML = '';
+                
+                // Add day headers
+                const dayHeaders = ['M', 'S', 'S', 'R', 'K', 'J', 'S'];
+                dayHeaders.forEach(day => {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day-header';
+                    dayElement.textContent = day;
+                    calendarGrid.appendChild(dayElement);
+                });
+                
+                // Add empty cells for days before month starts
+                const startOffset = startingDay === 0 ? 6 : startingDay - 1;
+                for (let i = 0; i < startOffset; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day empty';
+                    calendarGrid.appendChild(emptyDay);
+                }
+                
+                // Add days of the month
+                const user = Auth.getCurrentUser();
+                const today = new Date();
+                
+                for (let day = 1; day <= totalDays; day++) {
+                    const date = new Date(year, month, day);
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    dayElement.setAttribute('data-date', dateStr);
+                    
+                    // Check if today
+                    if (date.toDateString() === today.toDateString()) {
+                        dayElement.classList.add('active');
+                    }
+                    
+                    // Check attendance status
+                    if (user) {
+                        const attendance = db.getAttendanceByUserAndDate(user.id, dateStr);
+                        if (attendance) {
+                            let status = attendance.status;
+                            if (attendance.type === 'sick') status = 'sick';
+                            if (attendance.type === 'permit') status = 'permit';
+                            if (attendance.type === 'wfh') status = 'wfh';
+                            if (attendance.isTap) status = 'no-out';
+                            
+                            const statusElement = document.createElement('div');
+                            statusElement.className = 'calendar-day-status';
+                            statusElement.style.backgroundColor = this.getStatusColor(status);
+                            dayElement.appendChild(statusElement);
+                        }
+                    }
+                    
+                    const dayNumber = document.createElement('div');
+                    dayNumber.className = 'calendar-day-number';
+                    dayNumber.textContent = day;
+                    dayElement.appendChild(dayNumber);
+                    
+                    calendarGrid.appendChild(dayElement);
+                }
+            }
+            
+            static getStatusColor(status) {
+                switch(status) {
+                    case 'present': return 'var(--secondary)';
+                    case 'late': return 'var(--warning)';
+                    case 'absent': return 'var(--danger)';
+                    case 'no-out': return 'var(--info)';
+                    case 'sick': return '#8B5CF6';
+                    case 'permit': return '#EC4899';
+                    case 'wfh': return '#14B8A6';
+                    default: return 'transparent';
+                }
+            }
+            
+            static openExportSheet() {
+                document.getElementById('exportSheet').classList.add('active');
+                document.getElementById('exportSheetOverlay').classList.add('active');
+            }
+            
+            static closeExportSheet() {
+                document.getElementById('exportSheet').classList.remove('active');
+                document.getElementById('exportSheetOverlay').classList.remove('active');
+            }
+            
+            static openAttendanceDetails() {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+                
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth() + 1;
+                
+                const attendances = db.getAttendanceByUserAndMonth(user.id, year, month);
+                const sheetContent = document.getElementById('attendanceSheetContent');
+                
+                if (!sheetContent) return;
+                
+                // Sort by date descending
+                attendances.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                if (attendances.length === 0) {
+                    sheetContent.innerHTML = `
+                        <div class="text-center" style="padding: 40px 20px; color: var(--gray-500);">
+                            <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                            <p>Tidak ada data kehadiran untuk bulan ini</p>
+                        </div>
+                    `;
+                } else {
+                    sheetContent.innerHTML = attendances.map(att => {
+                        const date = new Date(att.date);
+                        const dateStr = date.toLocaleDateString('id-ID', {
+                            weekday: 'long',
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        });
+                        
+                        let timeStr = '';
+                        if (att.inTime) {
+                            const inTime = new Date(att.inTime);
+                            timeStr = `<span>Masuk: ${inTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>`;
+                            
+                            if (att.outTime) {
+                                const outTime = new Date(att.outTime);
+                                timeStr += `<span>Pulang: ${outTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>`;
+                            }
+                        }
+                        
+                        let status = att.status;
+                        let statusText = '';
+                        let statusClass = '';
+                        
+                        if (att.type === 'sick') {
+                            statusText = 'SAKIT';
+                            statusClass = 'sick';
+                        } else if (att.type === 'permit') {
+                            statusText = 'IZIN';
+                            statusClass = 'permit';
+                        } else if (att.type === 'wfh') {
+                            statusText = 'WFH';
+                            statusClass = 'wfh';
+                        } else if (att.isTap) {
+                            statusText = 'TAP';
+                            statusClass = 'no-out';
+                        } else if (att.outTime) {
+                            if (att.status === 'present') {
+                                statusText = 'TEPAT WAKTU';
+                                statusClass = 'present';
+                            } else if (att.status === 'late') {
+                                statusText = 'TERLAMBAT';
+                                statusClass = 'late';
+                            }
+                        } else {
+                            if (att.status === 'present' || att.status === 'late') {
+                                statusText = 'TIDAK ABSEN PULANG';
+                                statusClass = 'no-out';
+                            } else if (att.status === 'absent') {
+                                statusText = 'ALPA';
+                                statusClass = 'absent';
+                            }
+                        }
+                        
+                        const notes = att.notes ? `
+                            <div class="detail-notes">
+                                <strong>Keterangan:</strong> ${att.notes}
+                            </div>
+                        ` : '';
+                        
+                        return `
+                            <div class="attendance-detail-item">
+                                <div class="detail-status-indicator" style="background-color: ${this.getStatusColor(statusClass)}"></div>
+                                <div class="detail-content">
+                                    <div class="detail-header">
+                                        <div class="detail-date">${dateStr}</div>
+                                        <div class="detail-type ${statusClass}">${statusText}</div>
+                                    </div>
+                                    <div class="detail-time">${timeStr || '<span>Tidak hadir</span>'}</div>
+                                    ${notes}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                
+                // Show bottom sheet and overlay
+                document.getElementById('attendanceSheet').classList.add('active');
+                document.getElementById('attendanceSheetOverlay').classList.add('active');
+            }
+            
+            static closeAttendanceDetails() {
+                document.getElementById('attendanceSheet').classList.remove('active');
+                document.getElementById('attendanceSheetOverlay').classList.remove('active');
+            }
+            
+            static exportData(format) {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+                
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth() + 1;
+                const monthName = monthNames[month - 1];
+                
+                const exportData = db.getExportData(user.id, year, month);
+                
+                // Show loading
+                const loading = UIComponents.showLoading(`Mengekspor data ke ${format.toUpperCase()}...`);
+                
+                // Simulate export processing
+                setTimeout(() => {
+                    UIComponents.hideLoading(loading);
+                    
+                    if (format === 'excel') {
+                        this.exportToExcel(exportData, monthName, year);
+                    } else if (format === 'pdf') {
+                        this.exportToPDF(exportData, monthName, year);
+                    }
+                    
+                    this.closeExportSheet();
+                    UIComponents.showToast(`Data berhasil diekspor ke ${format.toUpperCase()}`, 'success');
+                }, 1500);
+            }
+            
+            static exportToExcel(data, month, year) {
+                // Create Excel content
+                const header = [
+                    'No', 'No Pegawai', 'Nama', 'Status Pegawai', 'Hadir',
+                    'Sakit', 'Ijin', 'Alpha', 'Dispen', 'Cuti',
+                    'Terlambat', 'WFH', '% Kehadiran'
+                ];
+                
+                const row = [
+                    data.no,
+                    data.employeeId,
+                    data.name,
+                    data.status,
+                    data.present,
+                    data.sick,
+                    data.permit,
+                    data.absent,
+                    data.dispensation,
+                    data.leave,
+                    data.late,
+                    data.wfh,
+                    `${data.percentage}%`
+                ];
+                
+                // Create CSV content
+                const csvContent = [
+                    header.join(','),
+                    row.join(',')
+                ].join('\n');
+                
+                // Create blob and download
+                const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                
+                link.href = url;
+                link.download = `Rekap_Kehadiran_${data.name}_${month}_${year}.csv`;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+            }
+            
+            static exportToPDF(data, month, year) {
+                // Create PDF content using html2pdf (would require library)
+                // For demo, we'll create a simple HTML table and prompt to print
+                const pdfContent = `
+                    <html>
+                        <head>
+                            <title>Rekap Kehadiran ${data.name} - ${month} ${year}</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; padding: 20px; }
+                                h1 { text-align: center; margin-bottom: 30px; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th, td { border: 1px solid #000; padding: 10px; text-align: center; }
+                                th { background-color: #f2f2f2; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>REKAP KEHADIRAN</h1>
+                            <h3>SMK Darul Abror</h3>
+                            <p><strong>Periode:</strong> ${month} ${year}</p>
+                            <p><strong>Nama:</strong> ${data.name}</p>
+                            <p><strong>NIP:</strong> ${data.employeeId}</p>
+                            
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>No Pegawai</th>
+                                        <th>Nama</th>
+                                        <th>Status Pegawai</th>
+                                        <th>Hadir</th>
+                                        <th>Sakit</th>
+                                        <th>Ijin</th>
+                                        <th>Alpha</th>
+                                        <th>Dispen</th>
+                                        <th>Cuti</th>
+                                        <th>Terlambat</th>
+                                        <th>WFH</th>
+                                        <th>% Kehadiran</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${data.no}</td>
+                                        <td>${data.employeeId}</td>
+                                        <td>${data.name}</td>
+                                        <td>${data.status}</td>
+                                        <td>${data.present}</td>
+                                        <td>${data.sick}</td>
+                                        <td>${data.permit}</td>
+                                        <td>${data.absent}</td>
+                                        <td>${data.dispensation}</td>
+                                        <td>${data.leave}</td>
+                                        <td>${data.late}</td>
+                                        <td>${data.wfh}</td>
+                                        <td>${data.percentage}%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </body>
+                    </html>
+                `;
+                
+                // Open in new window for printing
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(pdfContent);
+                printWindow.document.close();
+                printWindow.print();
+            }
+        }
+
+        // ========== INITIALIZE APP ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            // Prevent overscroll on iOS
+            document.body.addEventListener('touchmove', function(e) {
+                if (e.target === document.body || e.target === document.documentElement) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            // Initialize the app
+            App.init();
+            
+            // Handle back button for Android
+            if (window.history && window.history.pushState) {
+                window.history.pushState(null, null, window.location.href);
+                window.addEventListener('popstate', function() {
+                    window.history.pushState(null, null, window.location.href);
+                });
+            }
+        });
+
+        // Handle resize for mobile browsers
+        window.addEventListener('resize', () => {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            
+            // Adjust bottom nav padding for safe areas
+            const bottomNav = document.querySelector('.bottom-nav');
+            if (bottomNav) {
+                const safeAreaBottom = window.safeAreaInsets ? window.safeAreaInsets.bottom : 0;
+                bottomNav.style.paddingBottom = `calc(12px + ${safeAreaBottom}px)`;
+            }
+        });
+
+        // Set initial viewport height
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    </script>
+</body>
+</html>

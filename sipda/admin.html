@@ -1,0 +1,4063 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SIPDA - SMK Darul Abror</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="img/logosmkda.png">
+    <style>
+        /* ========== VARIABLES & RESET ========== */
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338CA;
+            --primary-light: #6366F1;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 6px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 40px -10px rgb(0 0 0 / 0.15);
+            --radius-sm: 0.375rem;
+            --radius: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+            --header-height: 56px;
+            --bottom-nav-height: 64px;
+            --admin-sidebar-width: 280px;
+        }
+
+        .dark-theme {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --primary-light: #818CF8;
+            --light: #1F2937;
+            --gray-100: #374151;
+            --gray-200: #4B5563;
+            --gray-300: #6B7280;
+            --gray-400: #9CA3AF;
+            --gray-500: #D1D5DB;
+            --gray-600: #E5E7EB;
+            --gray-700: #F3F4F6;
+            --gray-800: #F9FAFB;
+            --gray-900: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: 16px;
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: var(--light);
+            color: var(--gray-900);
+            line-height: 1.5;
+            height: 100%;
+            transition: var(--transition);
+        }
+
+        /* ========== LAYOUT & CONTAINERS ========== */
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            background: var(--light);
+            overflow: hidden;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ========== LOGIN SCREEN ========== */
+        .login-screen {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .login-container {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .logo-large {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-large .fallback-logo {
+            font-size: 3.5rem;
+            color: white;
+        }
+
+        .login-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .login-form {
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: white;
+            border: 2px solid transparent;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gray-800);
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-lg);
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            margin-top: 40px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            animation: fadeIn 1s ease-out 0.4s both;
+        }
+
+        /* ========== ADMIN LAYOUT ========== */
+        .admin-screen {
+            background: var(--light);
+        }
+
+        .admin-header {
+            height: var(--header-height);
+            padding: 0 16px;
+            background: var(--light);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .admin-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-menu-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius);
+            background: var(--gray-100);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-700);
+        }
+
+        .admin-menu-btn:hover {
+            background: var(--gray-200);
+            color: var(--primary);
+        }
+
+        .admin-header-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-main {
+            display: flex;
+            height: calc(100% - var(--header-height));
+        }
+
+        .admin-sidebar {
+            width: var(--admin-sidebar-width);
+            background: var(--light);
+            border-right: 1px solid var(--gray-200);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .admin-sidebar.collapsed {
+            transform: translateX(-100%);
+            width: 0;
+        }
+
+        .admin-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px;
+        }
+
+        .admin-profile {
+            padding: 24px;
+            border-bottom: 1px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .admin-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 12px;
+        }
+
+        .admin-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .admin-role {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            background: var(--gray-100);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .admin-menu {
+            padding: 16px 0;
+        }
+
+        .admin-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            cursor: pointer;
+        }
+
+        .admin-menu-item:hover {
+            background: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .admin-menu-item.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .admin-menu-item i {
+            width: 20px;
+            font-size: 1.1rem;
+        }
+
+        .admin-menu-item span {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .admin-menu-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 16px 24px;
+        }
+
+        /* ========== ADMIN PAGES ========== */
+        .admin-page {
+            display: none;
+        }
+
+        .admin-page.active {
+            display: block;
+        }
+
+        .admin-page-header {
+            margin-bottom: 24px;
+        }
+
+        .admin-page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .admin-page-header p {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+        }
+
+        .admin-card {
+            background: var(--light);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .dark-theme .admin-card {
+            background: var(--gray-100);
+        }
+
+        .admin-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .admin-card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .admin-card-header .btn-primary {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .admin-card-header .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* ========== DASHBOARD PAGE ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
+        }
+
+        .dark-theme .stat-card {
+            background: var(--gray-100);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.users { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
+        .stat-icon.present { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
+        .stat-icon.late { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .stat-icon.absent { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .recent-activities {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .dark-theme .recent-activities {
+            background: var(--gray-100);
+        }
+
+        .recent-activities h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 16px;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius);
+            background: var(--gray-100);
+            transition: var(--transition);
+        }
+
+        .dark-theme .activity-item {
+            background: var(--gray-200);
+        }
+
+        .activity-item:hover {
+            background: var(--gray-200);
+        }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .activity-icon.present { background: var(--secondary); }
+        .activity-icon.late { background: var(--warning); }
+        .activity-icon.absent { background: var(--danger); }
+        .activity-icon.wfh { background: var(--info); }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-user {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .activity-desc {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        /* ========== LOCATION SETTINGS PAGE ========== */
+        .location-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .form-group .form-help {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-top: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            color: var(--gray-800);
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .dark-theme .form-input {
+            background: var(--gray-200);
+            border-color: var(--gray-300);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .map-preview {
+            height: 200px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            border: 2px dashed var(--gray-300);
+        }
+
+        .map-preview i {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .map-preview p {
+            font-size: 0.9rem;
+        }
+
+        .btn-save {
+            padding: 14px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .btn-save:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* ========== USER MANAGEMENT PAGE ========== */
+        .users-table-container {
+            overflow-x: auto;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .users-table th {
+            background: var(--gray-100);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-700);
+            border-bottom: 2px solid var(--gray-200);
+            font-size: 0.9rem;
+        }
+
+        .users-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: middle;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .user-details h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .user-role {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .user-role.admin { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
+        .user-role.guru { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
+        .user-role.staff { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+        .user-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .user-status.active { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
+        .user-status.inactive { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .btn-icon:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ========== USER MODAL ========== */
+        .user-modal .modal-content {
+            width: 95%;
+            max-width: 500px;
+        }
+
+        .user-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            background: var(--gray-200);
+            color: var(--gray-700);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dark-theme .btn-cancel {
+            background: var(--gray-300);
+            color: var(--gray-600);
+        }
+
+        .btn-cancel:hover {
+            background: var(--gray-300);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit {
+            flex: 1;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* ========== WORK SCHEDULE PAGE ========== */
+        .schedule-form {
+            max-width: 500px;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .time-input-group {
+            background: var(--gray-100);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--gray-200);
+        }
+
+        .time-input-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+        }
+
+        .time-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            text-align: center;
+            background: white;
+        }
+
+        .dark-theme .time-input {
+            background: var(--gray-200);
+        }
+
+        .working-days {
+            margin-top: 24px;
+        }
+
+        .working-days h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .day-checkbox {
+            display: none;
+        }
+
+        .day-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .day-checkbox:checked + .day-label {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .day-label .day-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .day-label .day-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        /* ========== REPORTS PAGE ========== */
+        .reports-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            color: var(--gray-800);
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .dark-theme .filter-select {
+            background: var(--gray-200);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-export-excel {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(135deg, #217346 0%, #1e9e5e 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-export-pdf {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-export-excel:hover,
+        .btn-export-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ========== ATTENDANCE PAGE ========== */
+        /* (Keep all existing attendance page styles from previous version) */
+        /* ... existing attendance page styles ... */
+
+        /* ========== MODALS & SHEETS ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--light);
+            border-radius: var(--radius-xl);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .close-modal {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
+            background: var(--gray-100);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-600);
+        }
+
+        .close-modal:hover {
+            background: var(--gray-200);
+            color: var(--primary);
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 77px);
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+                height: 0;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                height: auto;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== UTILITIES ========== */
+        .text-center { text-align: center; }
+        .text-primary { color: var(--primary); }
+        .text-secondary { color: var(--secondary); }
+        .text-danger { color: var(--danger); }
+        .text-warning { color: var(--warning); }
+        .text-info { color: var(--info); }
+
+        .bg-primary { background: var(--primary); }
+        .bg-secondary { background: var(--secondary); }
+        .bg-danger { background: var(--danger); }
+        .bg-warning { background: var(--warning); }
+        .bg-info { background: var(--info); }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--gray-300);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        /* Switch Toggle - FIXED */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 14px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #DC2626;
+            transform: translateY(-1px);
+        }
+
+        /* Settings Item */
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 8px;
+            background: var(--gray-100);
+        }
+
+        .settings-item:hover {
+            background: var(--gray-200);
+        }
+
+        .settings-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-text h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 2px;
+        }
+
+        .settings-text p {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                position: fixed;
+                top: var(--header-height);
+                left: 0;
+                bottom: 0;
+                z-index: 1000;
+                box-shadow: var(--shadow-xl);
+            }
+
+            .form-row,
+            .form-row-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .time-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .days-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            html {
+                font-size: 15px;
+            }
+            
+            .container {
+                padding: 0 14px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== SCROLLBAR ========== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
+
+        /* Error Message */
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: var(--radius);
+            display: none;
+        }
+
+        /* Toast Styles */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--light);
+            color: var(--gray-900);
+            padding: 16px 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid var(--primary);
+            max-width: 90%;
+            width: auto;
+        }
+        .toast-success { border-left-color: var(--secondary); }
+        .toast-error { border-left-color: var(--danger); }
+        .toast-warning { border-left-color: var(--warning); }
+        .toast-info { border-left-color: var(--info); }
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .toast i { font-size: 1.2rem; }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+        .loading-content {
+            background: var(--light);
+            padding: 24px;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease;
+        }
+        .loading-text {
+            margin-top: 12px;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        /* Confirm Modal */
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+            padding: 20px;
+        }
+        .confirm-content {
+            background: var(--light);
+            padding: 24px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease;
+            max-width: 400px;
+            width: 100%;
+        }
+        .confirm-message {
+            color: var(--gray-900);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .confirm-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .confirm-actions button {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+        .confirm-actions .btn-cancel {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+        .confirm-actions .btn-confirm {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen login-screen active">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-header">
+                    <div class="logo-large">
+                        <div class="fallback-logo">
+                            <i class="fas fa-school"></i>
+                        </div>
+                    </div>
+                    <h1>SIPDA - Admin</h1>
+                    <p>Portal Administrator SMK Darul Abror</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Username" required autocomplete="username">
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+                    </div>
+                    
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> MASUK SEBAGAI ADMIN
+                    </button>
+                    
+                    <div id="loginError" class="error-message"></div>
+                </form>
+                
+                <div class="login-footer">
+                    <p>© 2024 SMK Darul Abror. Hak cipta dilindungi undang-undang.</p>
+                    <p style="font-size: 0.8rem; margin-top: 8px;">Hanya untuk admin yang berwenang</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Portal -->
+    <div id="adminScreen" class="screen admin-screen">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="admin-header-left">
+                <button class="admin-menu-btn" id="adminMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-logo">
+                    <div class="fallback-logo">
+                        <i class="fas fa-school"></i>
+                    </div>
+                </div>
+                <div class="admin-header-title" id="adminPageTitle">Dashboard Admin</div>
+            </div>
+            <div class="admin-header-right">
+                <button class="profile-btn" id="adminProfileBtn">
+                    <i class="fas fa-user-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Admin Main Content -->
+        <div class="admin-main">
+            <!-- Sidebar -->
+            <aside class="admin-sidebar" id="adminSidebar">
+                <!-- Admin Profile -->
+                <div class="admin-profile">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="admin-name" id="adminName">Administrator</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+
+                <!-- Admin Menu -->
+                <div class="admin-menu">
+                    <a class="admin-menu-item active" data-page="adminDashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <a class="admin-menu-item" data-page="adminLocation">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Koordinat Lokasi</span>
+                    </a>
+                    
+                    <a class="admin-menu-item" data-page="adminUsers">
+                        <i class="fas fa-users"></i>
+                        <span>Manajemen Pengguna</span>
+                    </a>
+                    
+                    <a class="admin-menu-item" data-page="adminSchedule">
+                        <i class="fas fa-clock"></i>
+                        <span>Jadwal Kerja</span>
+                    </a>
+                    
+                    <a class="admin-menu-item" data-page="adminReports">
+                        <i class="fas fa-file-export"></i>
+                        <span>Laporan & Ekspor</span>
+                    </a>
+                    
+                    <a class="admin-menu-item" data-page="adminAttendance">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>Data Kehadiran</span>
+                    </a>
+                    
+                    <div class="admin-menu-divider"></div>
+                    
+                    <a class="admin-menu-item" id="adminLogoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Keluar</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Admin Content Area -->
+            <div class="admin-content">
+                <!-- Dashboard Page -->
+                <div id="adminDashboard" class="admin-page active">
+                    <div class="admin-page-header">
+                        <h2>Dashboard Admin</h2>
+                        <p>Selamat datang di panel administrasi SIPDA SMK Darul Abror</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon users">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-value" id="totalUsers">1</div>
+                            <div class="stat-label">Total Admin</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon present">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-value" id="todayPresent">0</div>
+                            <div class="stat-label">Aktivitas Hari Ini</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon late">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-value" id="todayLate">0</div>
+                            <div class="stat-label">Pengaturan</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon absent">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="stat-value" id="todayAbsent">0</div>
+                            <div class="stat-label">Ekspor Data</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Aktivitas Terbaru</h3>
+                        </div>
+                        <div class="recent-activities">
+                            <div class="activity-list" id="recentActivities">
+                                <!-- Activities will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Aksi Cepat</h3>
+                        </div>
+                        <div class="form-row-2" style="margin-top: 20px;">
+                            <button class="btn-primary" id="quickAddUser">
+                                <i class="fas fa-user-plus"></i> Tambah Admin
+                            </button>
+                            <button class="btn-primary" id="quickExport">
+                                <i class="fas fa-file-export"></i> Ekspor Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Settings Page -->
+                <div id="adminLocation" class="admin-page">
+                    <div class="admin-page-header">
+                        <h2>Pengaturan Lokasi Kantor</h2>
+                        <p>Atur koordinat dan radius untuk presensi di lokasi kantor</p>
+                    </div>
+
+                    <div class="admin-card">
+                        <form id="locationForm" class="location-form">
+                            <div class="form-group">
+                                <label for="officeName">Nama Lokasi</label>
+                                <input type="text" id="officeName" class="form-input" placeholder="SMK Darul Abror" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="latitude">Koordinat Latitude</label>
+                                    <input type="text" id="latitude" class="form-input" placeholder="-6.2088" required>
+                                    <div class="form-help">Koordinat garis lintang</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="longitude">Koordinat Longitude</label>
+                                    <input type="text" id="longitude" class="form-input" placeholder="106.8456" required>
+                                    <div class="form-help">Koordinat garis bujur</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="radius">Radius Presensi (meter)</label>
+                                <input type="number" id="radius" class="form-input" placeholder="200" min="50" max="1000" required>
+                                <div class="form-help">Jarak maksimum dari lokasi kantor untuk bisa presensi (50-1000 meter)</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="googleMapsLink">Link Google Maps</label>
+                                <input type="url" id="googleMapsLink" class="form-input" placeholder="https://maps.app.goo.gl/CwqrN8Qm4chuAy377" required>
+                                <div class="form-help">Link Google Maps lokasi kantor</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Preview Lokasi</label>
+                                <div class="map-preview" id="mapPreview">
+                                    <div>
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <p>Preview lokasi akan muncul di sini</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-save"></i> Simpan Pengaturan Lokasi
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Informasi Lokasi Saat Ini</h3>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div style="background: var(--gray-100); padding: 16px; border-radius: var(--radius);">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <i class="fas fa-map-marker-alt" style="color: var(--primary); font-size: 1.2rem;"></i>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--gray-900);" id="currentLocationName">SMK Darul Abror</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray-600);" id="currentCoordinates">-6.2088, 106.8456</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <i class="fas fa-ruler-combined" style="color: var(--primary); font-size: 1.2rem;"></i>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--gray-900);">Radius Presensi</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray-600);" id="currentRadius">200 meter</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <i class="fas fa-link" style="color: var(--primary); font-size: 1.2rem;"></i>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--gray-900);">Link Google Maps</div>
+                                        <a href="#" style="font-size: 0.9rem; color: var(--primary);" id="currentMapsLink" target="_blank">https://maps.app.goo.gl/CwqrN8Qm4chuAy377</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Page -->
+                <div id="adminUsers" class="admin-page">
+                    <div class="admin-page-header">
+                        <h2>Manajemen Admin</h2>
+                        <p>Kelola data administrator sistem</p>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Daftar Administrator</h3>
+                            <button class="btn-primary" id="addUserBtn">
+                                <i class="fas fa-user-plus"></i> Tambah Admin
+                            </button>
+                        </div>
+                        <div class="users-table-container">
+                            <table class="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Terakhir Aktif</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Users will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Schedule Page -->
+                <div id="adminSchedule" class="admin-page">
+                    <div class="admin-page-header">
+                        <h2>Pengaturan Jadwal Kerja</h2>
+                        <p>Atur jam masuk, pulang, dan hari kerja untuk semua pengguna</p>
+                    </div>
+
+                    <div class="admin-card">
+                        <form id="scheduleForm" class="schedule-form">
+                            <div class="time-inputs">
+                                <div class="time-input-group">
+                                    <label for="workStart">Jam Masuk</label>
+                                    <input type="time" id="workStart" class="time-input" value="07:00" required>
+                                </div>
+                                
+                                <div class="time-input-group">
+                                    <label for="workEnd">Jam Pulang</label>
+                                    <input type="time" id="workEnd" class="time-input" value="16:00" required>
+                                </div>
+                            </div>
+
+                            <div class="working-days">
+                                <h4>Hari Kerja</h4>
+                                <div class="days-grid">
+                                    <input type="checkbox" id="dayMon" class="day-checkbox" checked>
+                                    <label for="dayMon" class="day-label">
+                                        <span class="day-name">Senin</span>
+                                        <span class="day-number">1</span>
+                                    </label>
+                                    
+                                    <input type="checkbox" id="dayTue" class="day-checkbox" checked>
+                                    <label for="dayTue" class="day-label">
+                                        <span class="day-name">Selasa</span>
+                                        <span class="day-number">2</span>
+                                    </label>
+                                    
+                                    <input type="checkbox" id="dayWed" class="day-checkbox" checked>
+                                    <label for="dayWed" class="day-label">
+                                        <span class="day-name">Rabu</span>
+                                        <span class="day-number">3</span>
+                                    </label>
+                                    
+                                    <input type="checkbox" id="dayThu" class="day-checkbox" checked>
+                                    <label for="dayThu" class="day-label">
+                                        <span class="day-name">Kamis</span>
+                                        <span class="day-number">4</span>
+                                    </label>
+                                    
+                                    <input type="checkbox" id="dayFri" class="day-checkbox" checked>
+                                    <label for="dayFri" class="day-label">
+                                        <span class="day-name">Jumat</span>
+                                        <span class="day-number">5</span>
+                                    </label>
+                                    
+                                    <input type="checkbox" id="daySat" class="day-checkbox">
+                                    <label for="daySat" class="day-label">
+                                        <span class="day-name">Sabtu</span>
+                                        <span class="day-number">6</span>
+                                    </label>
+                                    
+                                    <input type="checkbox" id="daySun" class="day-checkbox">
+                                    <label for="daySun" class="day-label">
+                                        <span class="day-name">Minggu</span>
+                                        <span class="day-number">7</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 24px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--gray-700);">
+                                    <input type="checkbox" id="flexibleWFH" style="margin-right: 8px;">
+                                    Izinkan WFH (Work From Home)
+                                </label>
+                                <div class="form-help">Pengguna dapat melakukan presensi dari rumah dengan persetujuan</div>
+                            </div>
+
+                            <button type="submit" class="btn-save" style="margin-top: 24px;">
+                                <i class="fas fa-save"></i> Simpan Jadwal Kerja
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Informasi Jadwal Saat Ini</h3>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div style="background: var(--gray-100); padding: 16px; border-radius: var(--radius);">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--gray-900);">Jam Kerja</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray-600);" id="currentSchedule">07:00 - 16:00</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--gray-900);">Status WFH</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray-600);" id="currentWFHStatus">Diizinkan</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--gray-900); margin-bottom: 8px;">Hari Kerja</div>
+                                    <div style="font-size: 0.9rem; color: var(--gray-600);" id="currentWorkDays">Senin - Jumat</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Page -->
+                <div id="adminReports" class="admin-page">
+                    <div class="admin-page-header">
+                        <h2>Laporan & Ekspor Data</h2>
+                        <p>Ekspor data kehadiran dalam format Excel atau PDF</p>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Ekspor Data Kehadiran</h3>
+                        </div>
+                        
+                        <div class="reports-filters">
+                            <div class="filter-group">
+                                <label for="reportMonth">Bulan</label>
+                                <select id="reportMonth" class="filter-select">
+                                    <!-- Months will be populated dynamically -->
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="reportYear">Tahun</label>
+                                <select id="reportYear" class="filter-select">
+                                    <!-- Years will be populated dynamically -->
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="reportUser">Pengguna</label>
+                                <select id="reportUser" class="filter-select">
+                                    <option value="all">Semua Pengguna</option>
+                                    <!-- Users will be populated dynamically -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="export-buttons">
+                            <button class="btn-export-excel" id="exportExcelAll">
+                                <i class="fas fa-file-excel"></i> Ekspor Excel (Semua)
+                            </button>
+                            <button class="btn-export-pdf" id="exportPDFAll">
+                                <i class="fas fa-file-pdf"></i> Ekspor PDF (Semua)
+                            </button>
+                        </div>
+
+                        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-200);">
+                            <h4 style="margin-bottom: 16px; color: var(--gray-700);">Format Laporan</h4>
+                            <div style="background: var(--gray-100); padding: 16px; border-radius: var(--radius); font-size: 0.9rem;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px;">
+                                    <div>1. No</div>
+                                    <div>2. No Pegawai</div>
+                                    <div>3. Nama</div>
+                                    <div>4. Status Pegawai</div>
+                                    <div>5. Hadir</div>
+                                    <div>6. Sakit</div>
+                                    <div>7. Ijin</div>
+                                    <div>8. Alpha</div>
+                                    <div>9. Dispen</div>
+                                    <div>10. Cuti</div>
+                                    <div>11. Terlambat</div>
+                                    <div>12. WFH</div>
+                                    <div>13. % Kehadiran</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Ekspor Data Admin</h3>
+                        </div>
+                        <div style="padding: 20px;">
+                            <p style="margin-bottom: 16px; color: var(--gray-600);">Ekspor data administrator untuk keperluan administrasi:</p>
+                            <div class="export-buttons">
+                                <button class="btn-export-excel" id="exportUsersExcel">
+                                    <i class="fas fa-user-friends"></i> Ekspor Data Admin (Excel)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Data Page -->
+                <div id="adminAttendance" class="admin-page">
+                    <div class="admin-page-header">
+                        <h2>Data Kehadiran</h2>
+                        <p>Lihat dan kelola data kehadiran semua pengguna</p>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Filter Data</h3>
+                        </div>
+                        
+                        <div class="reports-filters">
+                            <div class="filter-group">
+                                <label for="attendanceDate">Tanggal</label>
+                                <input type="date" id="attendanceDate" class="filter-select">
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="attendanceUser">Pengguna</label>
+                                <select id="attendanceUser" class="filter-select">
+                                    <option value="all">Semua Pengguna</option>
+                                    <!-- Users will be populated dynamically -->
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="attendanceStatus">Status</label>
+                                <select id="attendanceStatus" class="filter-select">
+                                    <option value="all">Semua Status</option>
+                                    <option value="present">Hadir</option>
+                                    <option value="late">Terlambat</option>
+                                    <option value="absent">Tidak Hadir</option>
+                                    <option value="sick">Sakit</option>
+                                    <option value="permit">Izin</option>
+                                    <option value="wfh">WFH</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 16px;">
+                            <button class="btn-primary" id="filterAttendance">
+                                <i class="fas fa-filter"></i> Filter Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3>Data Kehadiran</h3>
+                        </div>
+                        <div class="users-table-container">
+                            <table class="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Tanggal</th>
+                                        <th>Jam Masuk</th>
+                                        <th>Jam Pulang</th>
+                                        <th>Status</th>
+                                        <th>Lokasi</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceTableBody">
+                                    <!-- Attendance data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- User Modal (Add/Edit) -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal-content user-modal">
+            <div class="modal-header">
+                <h3 id="userModalTitle">Tambah Admin Baru</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm" class="user-form">
+                    <input type="hidden" id="userId">
+                    
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="userName">Nama Lengkap</label>
+                            <input type="text" id="userName" class="form-input" placeholder="Nama admin" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="userEmployeeId">ID Admin</label>
+                            <input type="text" id="userEmployeeId" class="form-input" placeholder="ID admin" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userUsername">Username</label>
+                        <input type="text" id="userUsername" class="form-input" placeholder="Username untuk login" required>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="userPassword">Password</label>
+                            <input type="password" id="userPassword" class="form-input" placeholder="Password minimal 6 karakter" minlength="6">
+                            <div class="form-help">Kosongkan jika tidak ingin mengubah</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="userConfirmPassword">Konfirmasi Password</label>
+                            <input type="password" id="userConfirmPassword" class="form-input" placeholder="Konfirmasi password">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="userRole">Role</label>
+                            <select id="userRole" class="form-input" required>
+                                <option value="admin">Administrator</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="userStatus">Status</label>
+                            <select id="userStatus" class="form-input" required>
+                                <option value="active">Aktif</option>
+                                <option value="inactive">Tidak Aktif</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" id="userEmail" class="form-input" placeholder="admin@smkda.sch.id">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userPhone">Nomor Telepon</label>
+                        <input type="tel" id="userPhone" class="form-input" placeholder="081234567890">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="cancelUserForm">Batal</button>
+                        <button type="submit" class="btn-submit" id="submitUserForm">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Profile Modal -->
+    <div class="modal-overlay" id="adminProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Profil Admin</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-palette"></i>
+                        <div class="settings-text">
+                            <h4>Mode Tampilan</h4>
+                            <p>Ubah tema aplikasi</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="adminThemeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="settings-item" id="adminChangePasswordBtn">
+                    <div class="settings-info">
+                        <i class="fas fa-key"></i>
+                        <div class="settings-text">
+                            <h4>Ganti Password</h4>
+                            <p>Perbarui keamanan akun</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+
+                <button class="btn-logout" id="adminLogoutBtnModal">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Detail Modal -->
+    <div class="modal-overlay" id="attendanceDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detail Kehadiran</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="attendanceDetailContent">
+                    <!-- Detail will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== GLOBAL VARIABLES ==========
+        const monthNames = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+
+        // ========== ADMIN DATABASE ==========
+        class AdminDatabase {
+            constructor() {
+                this.storageKey = 'sipda_admin_db';
+                this.initAdminData();
+            }
+
+            initAdminData() {
+                if (!localStorage.getItem(this.storageKey)) {
+                    const initialData = {
+                        settings: {
+                            location: {
+                                name: "SMK Darul Abror",
+                                latitude: -6.2088,
+                                longitude: 106.8456,
+                                radius: 200,
+                                googleMapsLink: "https://maps.app.goo.gl/CwqrN8Qm4chuAy377"
+                            },
+                            schedule: {
+                                workStart: "07:00",
+                                workEnd: "16:00",
+                                workingDays: [1, 2, 3, 4, 5],
+                                allowWFH: true
+                            }
+                        },
+                        activities: [],
+                        exports: []
+                    };
+                    localStorage.setItem(this.storageKey, JSON.stringify(initialData));
+                }
+            }
+
+            getData() {
+                return JSON.parse(localStorage.getItem(this.storageKey));
+            }
+
+            saveData(data) {
+                localStorage.setItem(this.storageKey, JSON.stringify(data));
+            }
+
+            updateLocationSettings(location) {
+                const data = this.getData();
+                data.settings.location = location;
+                this.saveData(data);
+                return true;
+            }
+
+            getLocationSettings() {
+                const data = this.getData();
+                return data.settings.location;
+            }
+
+            updateScheduleSettings(schedule) {
+                const data = this.getData();
+                data.settings.schedule = schedule;
+                this.saveData(data);
+                return true;
+            }
+
+            getScheduleSettings() {
+                const data = this.getData();
+                return data.settings.schedule;
+            }
+
+            addActivity(activity) {
+                const data = this.getData();
+                activity.timestamp = new Date().toISOString();
+                activity.id = 'act_' + Date.now();
+                data.activities.unshift(activity);
+                
+                if (data.activities.length > 50) {
+                    data.activities = data.activities.slice(0, 50);
+                }
+                
+                this.saveData(data);
+                return activity;
+            }
+
+            getRecentActivities(limit = 10) {
+                const data = this.getData();
+                return data.activities.slice(0, limit);
+            }
+
+            addExportLog(exportData) {
+                const data = this.getData();
+                exportData.timestamp = new Date().toISOString();
+                exportData.id = 'exp_' + Date.now();
+                data.exports.unshift(exportData);
+                
+                if (data.exports.length > 20) {
+                    data.exports = data.exports.slice(0, 20);
+                }
+                
+                this.saveData(data);
+                return exportData;
+            }
+        }
+
+        // ========== MAIN DATABASE (Admin only) ==========
+        class MainDatabase {
+            constructor() {
+                this.storageKey = 'sipda_admin_only_db';
+                this.adminStorageKey = 'sipda_admin_db';
+                this.initAllData();
+            }
+
+            initAllData() {
+                // Initialize main database with only admin users
+                if (!localStorage.getItem(this.storageKey)) {
+                    // Only admin user
+                    const users = [
+                        { 
+                            id: '1', 
+                            username: 'admin', 
+                            password: 'admin123',
+                            name: 'Administrator Utama',
+                            employeeId: 'ADM001',
+                            role: 'super_admin',
+                            position: 'Super Administrator',
+                            status: 'active',
+                            email: 'admin@smkda.sch.id',
+                            phone: '081234567890',
+                            isAdmin: true,
+                            createdAt: new Date().toISOString(),
+                            lastLogin: null
+                        }
+                    ];
+
+                    const attendance = [];
+
+                    const mainData = {
+                        users: users,
+                        attendance: attendance,
+                        settings: {
+                            officeHours: { in: '07:00', out: '16:00' },
+                            lateThreshold: 1,
+                            gpsRadius: 100,
+                            workingDays: [1, 2, 3, 4, 5]
+                        }
+                    };
+                    localStorage.setItem(this.storageKey, JSON.stringify(mainData));
+                }
+
+                // Initialize admin database
+                if (!localStorage.getItem(this.adminStorageKey)) {
+                    new AdminDatabase();
+                }
+            }
+
+            getData() {
+                return JSON.parse(localStorage.getItem(this.storageKey));
+            }
+
+            saveData(data) {
+                localStorage.setItem(this.storageKey, JSON.stringify(data));
+            }
+
+            getAllUsers() {
+                const data = this.getData();
+                return data.users;
+            }
+
+            getUserById(userId) {
+                const data = this.getData();
+                return data.users.find(user => user.id === userId);
+            }
+
+            getUserByUsername(username) {
+                const data = this.getData();
+                return data.users.find(user => user.username === username);
+            }
+
+            addUser(user) {
+                const data = this.getData();
+                user.id = 'user_' + Date.now();
+                user.createdAt = new Date().toISOString();
+                user.lastLogin = null;
+                user.isAdmin = true;
+                data.users.push(user);
+                this.saveData(data);
+                return user;
+            }
+
+            updateUser(userId, updates) {
+                const data = this.getData();
+                const userIndex = data.users.findIndex(user => user.id === userId);
+                if (userIndex !== -1) {
+                    data.users[userIndex] = { ...data.users[userIndex], ...updates, updatedAt: new Date().toISOString() };
+                    this.saveData(data);
+                    return true;
+                }
+                return false;
+            }
+
+            deleteUser(userId) {
+                const data = this.getData();
+                const userIndex = data.users.findIndex(user => user.id === userId);
+                if (userIndex !== -1) {
+                    // Prevent deleting the last admin
+                    if (data.users.length <= 1) {
+                        return false;
+                    }
+                    data.users.splice(userIndex, 1);
+                    this.saveData(data);
+                    return true;
+                }
+                return false;
+            }
+
+            getAllAttendance() {
+                const data = this.getData();
+                return data.attendance;
+            }
+
+            getAttendanceByDate(date) {
+                const data = this.getData();
+                return data.attendance.filter(att => att.date === date);
+            }
+
+            getAttendanceByUser(userId) {
+                const data = this.getData();
+                return data.attendance.filter(att => att.userId === userId);
+            }
+
+            getTodayStats() {
+                const today = new Date().toISOString().split('T')[0];
+                const attendance = this.getAttendanceByDate(today);
+                const users = this.getAllUsers();
+                
+                const stats = {
+                    totalUsers: users.length,
+                    todayPresent: attendance.filter(a => a.status === 'present').length,
+                    todayLate: attendance.filter(a => a.status === 'late').length,
+                    todayAbsent: users.length - attendance.length,
+                    todayWFH: attendance.filter(a => a.type === 'wfh').length,
+                    todaySick: attendance.filter(a => a.type === 'sick').length,
+                    todayPermit: attendance.filter(a => a.type === 'permit').length
+                };
+                
+                return stats;
+            }
+
+            getUserStats(userId, month, year) {
+                const userAttendance = this.getAttendanceByUser(userId).filter(att => {
+                    const attDate = new Date(att.date);
+                    return attDate.getMonth() + 1 === month && attDate.getFullYear() === year;
+                });
+                
+                const stats = {
+                    present: userAttendance.filter(a => a.status === 'present' && a.outTime).length,
+                    late: userAttendance.filter(a => a.status === 'late' && a.outTime).length,
+                    absent: userAttendance.filter(a => a.status === 'absent').length,
+                    noOut: userAttendance.filter(a => (a.status === 'present' || a.status === 'late') && !a.outTime && !a.isTap).length,
+                    sick: userAttendance.filter(a => a.type === 'sick').length,
+                    permit: userAttendance.filter(a => a.type === 'permit').length,
+                    wfh: userAttendance.filter(a => a.type === 'wfh').length,
+                    total: userAttendance.length
+                };
+                
+                return stats;
+            }
+
+            getExportData(month, year, userId = null) {
+                let users = this.getAllUsers();
+                
+                if (userId && userId !== 'all') {
+                    users = users.filter(u => u.id === userId);
+                }
+                
+                const exportData = users.map((user, index) => {
+                    const stats = this.getUserStats(user.id, month, year);
+                    const workingDays = this.getWorkingDaysInMonth(month, year);
+                    const attendancePercentage = workingDays > 0 ? 
+                        Math.round(((stats.present + stats.late + stats.wfh) / workingDays) * 100) : 0;
+                    
+                    return {
+                        no: index + 1,
+                        employeeId: user.employeeId,
+                        name: user.name,
+                        status: this.getEmployeeStatus(user.role),
+                        present: stats.present,
+                        sick: stats.sick,
+                        permit: stats.permit,
+                        absent: stats.absent,
+                        dispensation: 0,
+                        leave: 0,
+                        late: stats.late,
+                        wfh: stats.wfh,
+                        percentage: attendancePercentage
+                    };
+                });
+                
+                return exportData;
+            }
+
+            getWorkingDaysInMonth(month, year) {
+                const date = new Date(year, month - 1, 1);
+                const daysInMonth = new Date(year, month, 0).getDate();
+                let workingDays = 0;
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    date.setDate(day);
+                    const dayOfWeek = date.getDay();
+                    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                        workingDays++;
+                    }
+                }
+
+                return workingDays;
+            }
+
+            getEmployeeStatus(role) {
+                switch(role) {
+                    case 'super_admin': return 'Super Admin';
+                    case 'admin': return 'Administrator';
+                    default: return 'Admin';
+                }
+            }
+        }
+
+        const db = new MainDatabase();
+        const adminDb = new AdminDatabase();
+
+        // ========== AUTHENTICATION ==========
+        class Auth {
+            static currentUser = null;
+            static isAdmin = false;
+
+            static login(username, password) {
+                const user = db.getUserByUsername(username);
+                
+                if (!user) {
+                    return { success: false, error: 'Username tidak ditemukan' };
+                }
+
+                if (user.password !== password) {
+                    return { success: false, error: 'Password salah' };
+                }
+
+                // Only allow admin users
+                if (!user.isAdmin && user.role !== 'admin' && user.role !== 'super_admin') {
+                    return { success: false, error: 'Hanya admin yang dapat mengakses sistem ini' };
+                }
+
+                this.currentUser = user;
+                this.isAdmin = true;
+                
+                // Update last login
+                db.updateUser(user.id, { lastLogin: new Date().toISOString() });
+                
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('lastLogin', new Date().toISOString());
+                
+                // Log activity
+                adminDb.addActivity({
+                    type: 'login',
+                    user: user.name,
+                    description: 'Login ke sistem admin'
+                });
+                
+                return { success: true, user, isAdmin: this.isAdmin };
+            }
+
+            static logout() {
+                if (this.isAdmin && this.currentUser) {
+                    adminDb.addActivity({
+                        type: 'logout',
+                        user: this.currentUser.name,
+                        description: 'Logout dari sistem admin'
+                    });
+                }
+                
+                this.currentUser = null;
+                this.isAdmin = false;
+                localStorage.removeItem('currentUser');
+                return { success: true };
+            }
+
+            static getCurrentUser() {
+                if (!this.currentUser) {
+                    const savedUser = localStorage.getItem('currentUser');
+                    if (savedUser) {
+                        this.currentUser = JSON.parse(savedUser);
+                        this.isAdmin = this.currentUser.isAdmin || this.currentUser.role === 'admin' || this.currentUser.role === 'super_admin';
+                    }
+                }
+                return this.currentUser;
+            }
+
+            static isLoggedIn() {
+                return this.getCurrentUser() !== null;
+            }
+
+            static getIsAdmin() {
+                return this.isAdmin;
+            }
+        }
+
+        // ========== UI COMPONENTS ==========
+        class UIComponents {
+            static showToast(message, type = 'info', duration = 3000) {
+                document.querySelectorAll('.toast').forEach(toast => toast.remove());
+                
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                toast.innerHTML = `
+                    <div class="toast-content">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+
+                document.body.appendChild(toast);
+
+                setTimeout(() => toast.classList.add('show'), 10);
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+
+            static showLoading(message = 'Memuat...') {
+                document.querySelectorAll('.loading-overlay').forEach(loading => loading.remove());
+                
+                const loading = document.createElement('div');
+                loading.className = 'loading-overlay';
+                loading.innerHTML = `
+                    <div class="loading-content">
+                        <div class="spinner"></div>
+                        <div class="loading-text">${message}</div>
+                    </div>
+                `;
+
+                document.body.appendChild(loading);
+                return loading;
+            }
+
+            static hideLoading(loadingElement) {
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+            }
+
+            static confirm(message, callback) {
+                document.querySelectorAll('.confirm-modal').forEach(modal => modal.remove());
+                
+                const confirmModal = document.createElement('div');
+                confirmModal.className = 'confirm-modal';
+                confirmModal.innerHTML = `
+                    <div class="confirm-content">
+                        <div class="confirm-message">${message}</div>
+                        <div class="confirm-actions">
+                            <button class="btn-cancel">Batal</button>
+                            <button class="btn-confirm">Ya</button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(confirmModal);
+
+                const cancelBtn = confirmModal.querySelector('.btn-cancel');
+                const confirmBtn = confirmModal.querySelector('.btn-confirm');
+
+                cancelBtn.addEventListener('click', () => {
+                    confirmModal.remove();
+                });
+
+                confirmBtn.addEventListener('click', () => {
+                    callback();
+                    confirmModal.remove();
+                });
+            }
+        }
+
+        // ========== ADMIN MANAGER ==========
+        class AdminManager {
+            static init() {
+                this.setupEventListeners();
+                this.loadAdminProfile();
+                this.loadDashboard();
+                this.loadLocationSettings();
+                this.loadUsers();
+                this.loadScheduleSettings();
+                this.setupReportsFilters();
+                this.setupAttendanceFilters();
+            }
+
+            static setupEventListeners() {
+                // Menu toggle
+                const adminMenuToggle = document.getElementById('adminMenuToggle');
+                if (adminMenuToggle) {
+                    adminMenuToggle.addEventListener('click', () => {
+                        this.toggleSidebar();
+                    });
+                }
+
+                // Admin menu items
+                document.querySelectorAll('.admin-menu-item[data-page]').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const pageId = item.getAttribute('data-page');
+                        this.showAdminPage(pageId);
+                    });
+                });
+
+                // Admin profile button
+                const adminProfileBtn = document.getElementById('adminProfileBtn');
+                if (adminProfileBtn) {
+                    adminProfileBtn.addEventListener('click', () => {
+                        document.getElementById('adminProfileModal').classList.add('active');
+                    });
+                }
+
+                // Admin logout
+                const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+                if (adminLogoutBtn) {
+                    adminLogoutBtn.addEventListener('click', () => {
+                        this.handleLogout();
+                    });
+                }
+
+                const adminLogoutBtnModal = document.getElementById('adminLogoutBtnModal');
+                if (adminLogoutBtnModal) {
+                    adminLogoutBtnModal.addEventListener('click', () => {
+                        document.getElementById('adminProfileModal').classList.remove('active');
+                        this.handleLogout();
+                    });
+                }
+
+                // Theme toggle in admin - FIXED
+                const adminThemeToggle = document.getElementById('adminThemeToggle');
+                if (adminThemeToggle) {
+                    // Set initial state
+                    const savedTheme = localStorage.getItem('theme');
+                    adminThemeToggle.checked = savedTheme === 'dark';
+                    
+                    adminThemeToggle.addEventListener('change', (e) => {
+                        const isDark = e.target.checked;
+                        document.body.classList.toggle('dark-theme', isDark);
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                        UIComponents.showToast(`Mode ${isDark ? 'gelap' : 'terang'} diaktifkan`, 'info');
+                    });
+                }
+
+                // Change password in admin
+                const adminChangePasswordBtn = document.getElementById('adminChangePasswordBtn');
+                if (adminChangePasswordBtn) {
+                    adminChangePasswordBtn.addEventListener('click', () => {
+                        document.getElementById('adminProfileModal').classList.remove('active');
+                        App.showChangePassword();
+                    });
+                }
+
+                // Quick actions
+                const quickAddUser = document.getElementById('quickAddUser');
+                if (quickAddUser) {
+                    quickAddUser.addEventListener('click', () => {
+                        this.showAddUserModal();
+                    });
+                }
+
+                const quickExport = document.getElementById('quickExport');
+                if (quickExport) {
+                    quickExport.addEventListener('click', () => {
+                        this.showAdminPage('adminReports');
+                    });
+                }
+
+                // Location form
+                const locationForm = document.getElementById('locationForm');
+                if (locationForm) {
+                    locationForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.saveLocationSettings();
+                    });
+                }
+
+                // User management
+                const addUserBtn = document.getElementById('addUserBtn');
+                if (addUserBtn) {
+                    addUserBtn.addEventListener('click', () => {
+                        this.showAddUserModal();
+                    });
+                }
+
+                // User modal
+                const cancelUserForm = document.getElementById('cancelUserForm');
+                if (cancelUserForm) {
+                    cancelUserForm.addEventListener('click', () => {
+                        document.getElementById('userModal').classList.remove('active');
+                    });
+                }
+
+                const userForm = document.getElementById('userForm');
+                if (userForm) {
+                    userForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.saveUser();
+                    });
+                }
+
+                // Schedule form
+                const scheduleForm = document.getElementById('scheduleForm');
+                if (scheduleForm) {
+                    scheduleForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.saveScheduleSettings();
+                    });
+                }
+
+                // Export buttons
+                const exportExcelAll = document.getElementById('exportExcelAll');
+                if (exportExcelAll) {
+                    exportExcelAll.addEventListener('click', () => {
+                        this.exportAllData('excel');
+                    });
+                }
+
+                const exportPDFAll = document.getElementById('exportPDFAll');
+                if (exportPDFAll) {
+                    exportPDFAll.addEventListener('click', () => {
+                        this.exportAllData('pdf');
+                    });
+                }
+
+                const exportUsersExcel = document.getElementById('exportUsersExcel');
+                if (exportUsersExcel) {
+                    exportUsersExcel.addEventListener('click', () => {
+                        this.exportUsersData();
+                    });
+                }
+
+                // Attendance filter
+                const filterAttendance = document.getElementById('filterAttendance');
+                if (filterAttendance) {
+                    filterAttendance.addEventListener('click', () => {
+                        this.filterAttendanceData();
+                    });
+                }
+
+                // Close modals
+                document.querySelectorAll('.close-modal').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const modal = e.target.closest('.modal-overlay');
+                        if (modal) modal.classList.remove('active');
+                    });
+                });
+
+                // Click outside modal to close
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.classList.remove('active');
+                        }
+                    });
+                });
+            }
+
+            static toggleSidebar() {
+                const sidebar = document.getElementById('adminSidebar');
+                if (sidebar) {
+                    sidebar.classList.toggle('collapsed');
+                }
+            }
+
+            static showAdminPage(pageId) {
+                // Update active menu item
+                document.querySelectorAll('.admin-menu-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                const activeMenuItem = document.querySelector(`.admin-menu-item[data-page="${pageId}"]`);
+                if (activeMenuItem) {
+                    activeMenuItem.classList.add('active');
+                }
+
+                // Update page title
+                const pageTitles = {
+                    'adminDashboard': 'Dashboard Admin',
+                    'adminLocation': 'Pengaturan Lokasi',
+                    'adminUsers': 'Manajemen Admin',
+                    'adminSchedule': 'Jadwal Kerja',
+                    'adminReports': 'Laporan & Ekspor',
+                    'adminAttendance': 'Data Kehadiran'
+                };
+                
+                const adminPageTitle = document.getElementById('adminPageTitle');
+                if (adminPageTitle) {
+                    adminPageTitle.textContent = pageTitles[pageId] || 'Admin';
+                }
+
+                // Show selected page
+                document.querySelectorAll('.admin-page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                const targetPage = document.getElementById(pageId);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                }
+
+                // Load specific page data
+                switch(pageId) {
+                    case 'adminDashboard':
+                        this.loadDashboard();
+                        break;
+                    case 'adminUsers':
+                        this.loadUsers();
+                        break;
+                    case 'adminReports':
+                        this.loadReports();
+                        break;
+                    case 'adminAttendance':
+                        this.loadAttendanceData();
+                        break;
+                }
+            }
+
+            static loadAdminProfile() {
+                const user = Auth.getCurrentUser();
+                const adminName = document.getElementById('adminName');
+                if (adminName && user) {
+                    adminName.textContent = user.name;
+                }
+            }
+
+            static loadDashboard() {
+                const stats = db.getTodayStats();
+                
+                const totalUsers = document.getElementById('totalUsers');
+                const todayPresent = document.getElementById('todayPresent');
+                const todayLate = document.getElementById('todayLate');
+                const todayAbsent = document.getElementById('todayAbsent');
+                
+                if (totalUsers) totalUsers.textContent = stats.totalUsers;
+                if (todayPresent) todayPresent.textContent = stats.todayPresent;
+                if (todayLate) todayLate.textContent = stats.todayLate;
+                if (todayAbsent) todayAbsent.textContent = stats.todayAbsent;
+
+                // Load recent activities
+                this.loadRecentActivities();
+            }
+
+            static loadRecentActivities() {
+                const activities = adminDb.getRecentActivities();
+                const container = document.getElementById('recentActivities');
+                
+                if (!container) return;
+                
+                if (activities.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: var(--gray-500);">
+                            <i class="fas fa-history" style="font-size: 2rem; margin-bottom: 12px;"></i>
+                            <p>Belum ada aktivitas</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = activities.map(activity => {
+                    const iconClass = {
+                        'login': 'fas fa-sign-in-alt',
+                        'logout': 'fas fa-sign-out-alt',
+                        'user_add': 'fas fa-user-plus',
+                        'user_edit': 'fas fa-user-edit',
+                        'user_delete': 'fas fa-user-times',
+                        'location_update': 'fas fa-map-marker-alt',
+                        'schedule_update': 'fas fa-clock',
+                        'export': 'fas fa-file-export'
+                    }[activity.type] || 'fas fa-info-circle';
+
+                    const iconColor = {
+                        'login': 'present',
+                        'logout': 'late',
+                        'user_add': 'present',
+                        'user_edit': 'wfh',
+                        'user_delete': 'absent'
+                    }[activity.type] || 'present';
+
+                    const timeAgo = this.getTimeAgo(new Date(activity.timestamp));
+                    
+                    return `
+                        <div class="activity-item">
+                            <div class="activity-icon ${iconColor}">
+                                <i class="${iconClass}"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-user">${activity.user}</div>
+                                <div class="activity-desc">${activity.description}</div>
+                                <div class="activity-time">${timeAgo}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            static getTimeAgo(date) {
+                const now = new Date();
+                const diff = Math.floor((now - date) / 1000);
+                
+                if (diff < 60) return 'Baru saja';
+                if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`;
+                if (diff < 86400) return `${Math.floor(diff / 3600)} jam yang lalu`;
+                if (diff < 604800) return `${Math.floor(diff / 86400)} hari yang lalu`;
+                
+                return date.toLocaleDateString('id-ID');
+            }
+
+            static loadLocationSettings() {
+                const location = adminDb.getLocationSettings();
+                
+                const officeName = document.getElementById('officeName');
+                const latitude = document.getElementById('latitude');
+                const longitude = document.getElementById('longitude');
+                const radius = document.getElementById('radius');
+                const googleMapsLink = document.getElementById('googleMapsLink');
+                
+                if (officeName) officeName.value = location.name;
+                if (latitude) latitude.value = location.latitude;
+                if (longitude) longitude.value = location.longitude;
+                if (radius) radius.value = location.radius;
+                if (googleMapsLink) googleMapsLink.value = location.googleMapsLink;
+
+                // Update current location display
+                const currentLocationName = document.getElementById('currentLocationName');
+                const currentCoordinates = document.getElementById('currentCoordinates');
+                const currentRadius = document.getElementById('currentRadius');
+                const currentMapsLink = document.getElementById('currentMapsLink');
+                
+                if (currentLocationName) currentLocationName.textContent = location.name;
+                if (currentCoordinates) currentCoordinates.textContent = `${location.latitude}, ${location.longitude}`;
+                if (currentRadius) currentRadius.textContent = `${location.radius} meter`;
+                if (currentMapsLink) {
+                    currentMapsLink.textContent = location.googleMapsLink;
+                    currentMapsLink.href = location.googleMapsLink;
+                }
+            }
+
+            static saveLocationSettings() {
+                const location = {
+                    name: document.getElementById('officeName').value.trim(),
+                    latitude: parseFloat(document.getElementById('latitude').value),
+                    longitude: parseFloat(document.getElementById('longitude').value),
+                    radius: parseInt(document.getElementById('radius').value),
+                    googleMapsLink: document.getElementById('googleMapsLink').value.trim()
+                };
+
+                if (!location.name || isNaN(location.latitude) || isNaN(location.longitude) || isNaN(location.radius)) {
+                    UIComponents.showAlert('Harap isi semua field dengan benar', 'error');
+                    return;
+                }
+
+                if (location.radius < 50 || location.radius > 1000) {
+                    UIComponents.showAlert('Radius harus antara 50-1000 meter', 'error');
+                    return;
+                }
+
+                const success = adminDb.updateLocationSettings(location);
+                
+                if (success) {
+                    adminDb.addActivity({
+                        type: 'location_update',
+                        user: Auth.getCurrentUser().name,
+                        description: `Memperbarui lokasi kantor: ${location.name}`
+                    });
+
+                    this.loadLocationSettings();
+                    UIComponents.showAlert('Pengaturan lokasi berhasil disimpan', 'success');
+                } else {
+                    UIComponents.showAlert('Gagal menyimpan pengaturan lokasi', 'error');
+                }
+            }
+
+            static loadUsers() {
+                const users = db.getAllUsers();
+                const container = document.getElementById('usersTableBody');
+                
+                if (!container) return;
+                
+                if (users.length === 0) {
+                    container.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px; color: var(--gray-500);">
+                                <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 12px;"></i>
+                                <p>Belum ada admin</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = users.map(user => {
+                    const roleClass = 'admin';
+                    const statusClass = user.status === 'active' ? 'active' : 'inactive';
+                    const lastLogin = user.lastLogin ? 
+                        new Date(user.lastLogin).toLocaleDateString('id-ID') : 'Belum pernah';
+                    
+                    return `
+                        <tr>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <h4>${user.name}</h4>
+                                        <p>${user.employeeId} • ${user.position}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="user-role ${roleClass}">
+                                    ${user.role === 'super_admin' ? 'Super Admin' : 'Administrator'}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="user-status ${statusClass}">
+                                    ${user.status === 'active' ? 'Aktif' : 'Tidak Aktif'}
+                                </span>
+                            </td>
+                            <td>${lastLogin}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-icon btn-edit" onclick="AdminManager.editUser('${user.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete" onclick="AdminManager.deleteUser('${user.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            static showAddUserModal() {
+                const userModalTitle = document.getElementById('userModalTitle');
+                const userId = document.getElementById('userId');
+                const userPassword = document.getElementById('userPassword');
+                const userConfirmPassword = document.getElementById('userConfirmPassword');
+                const userModal = document.getElementById('userModal');
+                
+                if (userModalTitle) userModalTitle.textContent = 'Tambah Admin Baru';
+                if (userId) userId.value = '';
+                if (userPassword) {
+                    userPassword.required = true;
+                    userPassword.value = '';
+                }
+                if (userConfirmPassword) {
+                    userConfirmPassword.required = true;
+                    userConfirmPassword.value = '';
+                }
+                if (userModal) {
+                    const userForm = document.getElementById('userForm');
+                    if (userForm) userForm.reset();
+                    userModal.classList.add('active');
+                }
+            }
+
+            static editUser(userId) {
+                const user = db.getUserById(userId);
+                if (!user) return;
+
+                const userModalTitle = document.getElementById('userModalTitle');
+                const userIdInput = document.getElementById('userId');
+                const userName = document.getElementById('userName');
+                const userEmployeeId = document.getElementById('userEmployeeId');
+                const userUsername = document.getElementById('userUsername');
+                const userPassword = document.getElementById('userPassword');
+                const userConfirmPassword = document.getElementById('userConfirmPassword');
+                const userRole = document.getElementById('userRole');
+                const userStatus = document.getElementById('userStatus');
+                const userEmail = document.getElementById('userEmail');
+                const userPhone = document.getElementById('userPhone');
+                const userModal = document.getElementById('userModal');
+                
+                if (userModalTitle) userModalTitle.textContent = 'Edit Admin';
+                if (userIdInput) userIdInput.value = user.id;
+                if (userName) userName.value = user.name;
+                if (userEmployeeId) userEmployeeId.value = user.employeeId;
+                if (userUsername) userUsername.value = user.username;
+                if (userPassword) {
+                    userPassword.required = false;
+                    userPassword.value = '';
+                }
+                if (userConfirmPassword) {
+                    userConfirmPassword.required = false;
+                    userConfirmPassword.value = '';
+                }
+                if (userRole) userRole.value = user.role;
+                if (userStatus) userStatus.value = user.status;
+                if (userEmail) userEmail.value = user.email || '';
+                if (userPhone) userPhone.value = user.phone || '';
+                if (userModal) userModal.classList.add('active');
+            }
+
+            static deleteUser(userId) {
+                const user = db.getUserById(userId);
+                if (!user) return;
+
+                UIComponents.confirm(`Apakah Anda yakin ingin menghapus admin "${user.name}"?`, () => {
+                    const success = db.deleteUser(userId);
+                    
+                    if (success) {
+                        adminDb.addActivity({
+                            type: 'user_delete',
+                            user: Auth.getCurrentUser().name,
+                            description: `Menghapus admin: ${user.name}`
+                        });
+
+                        this.loadUsers();
+                        UIComponents.showAlert('Admin berhasil dihapus', 'success');
+                    } else {
+                        UIComponents.showAlert('Gagal menghapus admin. Minimal harus ada 1 admin di sistem.', 'error');
+                    }
+                });
+            }
+
+            static saveUser() {
+                const userId = document.getElementById('userId').value;
+                const isEdit = !!userId;
+
+                const userData = {
+                    name: document.getElementById('userName').value.trim(),
+                    employeeId: document.getElementById('userEmployeeId').value.trim(),
+                    username: document.getElementById('userUsername').value.trim(),
+                    role: document.getElementById('userRole').value,
+                    status: document.getElementById('userStatus').value,
+                    email: document.getElementById('userEmail').value.trim() || null,
+                    phone: document.getElementById('userPhone').value.trim() || null
+                };
+
+                // Validate required fields
+                if (!userData.name || !userData.employeeId || !userData.username || !userData.role) {
+                    UIComponents.showAlert('Harap isi semua field yang wajib', 'error');
+                    return;
+                }
+
+                // Check password for new user
+                if (!isEdit) {
+                    const password = document.getElementById('userPassword').value;
+                    const confirmPassword = document.getElementById('userConfirmPassword').value;
+                    
+                    if (!password || password.length < 6) {
+                        UIComponents.showAlert('Password minimal 6 karakter', 'error');
+                        return;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        UIComponents.showAlert('Password dan konfirmasi password tidak cocok', 'error');
+                        return;
+                    }
+                    
+                    userData.password = password;
+                } else {
+                    const password = document.getElementById('userPassword').value;
+                    const confirmPassword = document.getElementById('userConfirmPassword').value;
+                    
+                    if (password) {
+                        if (password.length < 6) {
+                            UIComponents.showAlert('Password minimal 6 karakter', 'error');
+                            return;
+                        }
+                        
+                        if (password !== confirmPassword) {
+                            UIComponents.showAlert('Password dan konfirmasi password tidak cocok', 'error');
+                            return;
+                        }
+                        
+                        userData.password = password;
+                    }
+                }
+
+                let success;
+                if (isEdit) {
+                    success = db.updateUser(userId, userData);
+                } else {
+                    userData.position = userData.role === 'super_admin' ? 'Super Administrator' : 'Administrator';
+                    success = db.addUser(userData);
+                }
+
+                if (success) {
+                    adminDb.addActivity({
+                        type: isEdit ? 'user_edit' : 'user_add',
+                        user: Auth.getCurrentUser().name,
+                        description: `${isEdit ? 'Mengedit' : 'Menambah'} admin: ${userData.name}`
+                    });
+
+                    document.getElementById('userModal').classList.remove('active');
+                    this.loadUsers();
+                    UIComponents.showAlert(`Admin berhasil ${isEdit ? 'diperbarui' : 'ditambahkan'}`, 'success');
+                } else {
+                    UIComponents.showAlert(`Gagal ${isEdit ? 'memperbarui' : 'menambah'} admin`, 'error');
+                }
+            }
+
+            static loadScheduleSettings() {
+                const schedule = adminDb.getScheduleSettings();
+                
+                const workStart = document.getElementById('workStart');
+                const workEnd = document.getElementById('workEnd');
+                const flexibleWFH = document.getElementById('flexibleWFH');
+                
+                if (workStart) workStart.value = schedule.workStart;
+                if (workEnd) workEnd.value = schedule.workEnd;
+                if (flexibleWFH) flexibleWFH.checked = schedule.allowWFH;
+
+                // Set day checkboxes
+                [1, 2, 3, 4, 5, 6, 7].forEach(day => {
+                    const checkbox = document.getElementById(`day${this.getDayName(day)}`);
+                    if (checkbox) {
+                        checkbox.checked = schedule.workingDays.includes(day);
+                    }
+                });
+
+                this.updateScheduleDisplay();
+            }
+
+            static getDayName(dayNumber) {
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                return days[dayNumber % 7];
+            }
+
+            static saveScheduleSettings() {
+                const schedule = {
+                    workStart: document.getElementById('workStart').value,
+                    workEnd: document.getElementById('workEnd').value,
+                    allowWFH: document.getElementById('flexibleWFH').checked,
+                    workingDays: []
+                };
+
+                [1, 2, 3, 4, 5, 6, 7].forEach(day => {
+                    const checkbox = document.getElementById(`day${this.getDayName(day)}`);
+                    if (checkbox && checkbox.checked) {
+                        schedule.workingDays.push(day);
+                    }
+                });
+
+                if (schedule.workingDays.length === 0) {
+                    UIComponents.showAlert('Pilih minimal satu hari kerja', 'error');
+                    return;
+                }
+
+                const success = adminDb.updateScheduleSettings(schedule);
+                
+                if (success) {
+                    adminDb.addActivity({
+                        type: 'schedule_update',
+                        user: Auth.getCurrentUser().name,
+                        description: 'Memperbarui jadwal kerja'
+                    });
+
+                    this.updateScheduleDisplay();
+                    UIComponents.showAlert('Jadwal kerja berhasil disimpan', 'success');
+                } else {
+                    UIComponents.showAlert('Gagal menyimpan jadwal kerja', 'error');
+                }
+            }
+
+            static updateScheduleDisplay() {
+                const schedule = adminDb.getScheduleSettings();
+                
+                const currentSchedule = document.getElementById('currentSchedule');
+                const currentWFHStatus = document.getElementById('currentWFHStatus');
+                const currentWorkDays = document.getElementById('currentWorkDays');
+                
+                if (currentSchedule) {
+                    currentSchedule.textContent = `${schedule.workStart} - ${schedule.workEnd}`;
+                }
+                
+                if (currentWFHStatus) {
+                    currentWFHStatus.textContent = schedule.allowWFH ? 'Diizinkan' : 'Tidak Diizinkan';
+                }
+                
+                const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const workingDayNames = schedule.workingDays
+                    .sort()
+                    .map(day => dayNames[(day - 1) % 7])
+                    .join(', ');
+                
+                if (currentWorkDays) {
+                    currentWorkDays.textContent = workingDayNames;
+                }
+            }
+
+            static setupReportsFilters() {
+                const monthSelect = document.getElementById('reportMonth');
+                if (monthSelect) {
+                    monthSelect.innerHTML = monthNames.map((month, index) => 
+                        `<option value="${index + 1}">${month}</option>`
+                    ).join('');
+                    
+                    const currentMonth = new Date().getMonth() + 1;
+                    monthSelect.value = currentMonth;
+                }
+
+                const yearSelect = document.getElementById('reportYear');
+                if (yearSelect) {
+                    const currentYear = new Date().getFullYear();
+                    
+                    for (let year = currentYear - 5; year <= currentYear + 1; year++) {
+                        yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
+                    }
+                    
+                    yearSelect.value = currentYear;
+                }
+
+                this.populateUserSelect('reportUser');
+            }
+
+            static setupAttendanceFilters() {
+                const today = new Date().toISOString().split('T')[0];
+                const attendanceDate = document.getElementById('attendanceDate');
+                if (attendanceDate) {
+                    attendanceDate.value = today;
+                }
+
+                this.populateUserSelect('attendanceUser');
+            }
+
+            static populateUserSelect(selectId) {
+                const select = document.getElementById(selectId);
+                if (!select) return;
+                
+                const users = db.getAllUsers();
+                
+                select.innerHTML = '<option value="all">Semua Admin</option>' +
+                    users.map(user => 
+                        `<option value="${user.id}">${user.name} (${user.employeeId})</option>`
+                    ).join('');
+            }
+
+            static exportAllData(format) {
+                const month = parseInt(document.getElementById('reportMonth').value);
+                const year = parseInt(document.getElementById('reportYear').value);
+                const userId = document.getElementById('reportUser').value;
+
+                const exportData = db.getExportData(month, year, userId);
+                
+                if (exportData.length === 0) {
+                    UIComponents.showAlert('Tidak ada data untuk diekspor', 'warning');
+                    return;
+                }
+
+                const loading = UIComponents.showLoading(`Mengekspor data ke ${format.toUpperCase()}...`);
+
+                setTimeout(() => {
+                    UIComponents.hideLoading(loading);
+
+                    adminDb.addActivity({
+                        type: 'export',
+                        user: Auth.getCurrentUser().name,
+                        description: `Mengexport data ${format.toUpperCase()} untuk ${monthNames[month-1]} ${year}`
+                    });
+
+                    if (format === 'excel') {
+                        this.exportToExcel(exportData, month, year, userId === 'all' ? 'semua' : 'terpilih');
+                    } else if (format === 'pdf') {
+                        this.exportToPDF(exportData, month, year, userId === 'all' ? 'semua' : 'terpilih');
+                    }
+                    
+                    UIComponents.showAlert(`Data berhasil diekspor ke ${format.toUpperCase()}`, 'success');
+                }, 1500);
+            }
+
+            static exportToExcel(data, month, year, scope) {
+                const headers = [
+                    'No', 'ID Admin', 'Nama', 'Status', 'Hadir',
+                    'Sakit', 'Ijin', 'Alpha', 'Dispen', 'Cuti',
+                    'Terlambat', 'WFH', '% Kehadiran'
+                ];
+                
+                const rows = data.map(item => [
+                    item.no,
+                    `"${item.employeeId}"`,
+                    `"${item.name}"`,
+                    `"${item.status}"`,
+                    item.present,
+                    item.sick,
+                    item.permit,
+                    item.absent,
+                    item.dispensation,
+                    item.leave,
+                    item.late,
+                    item.wfh,
+                    `${item.percentage}%`
+                ]);
+
+                const csvContent = [
+                    headers.join(','),
+                    ...rows.map(row => row.join(','))
+                ].join('\n');
+
+                const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                
+                const scopeText = scope === 'semua' ? 'Semua' : 'Terpilih';
+                link.href = url;
+                link.download = `Rekap_Admin_${scopeText}_${monthNames[month-1]}_${year}.csv`;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+            }
+
+            static exportToPDF(data, month, year, scope) {
+                const scopeText = scope === 'semua' ? 'Semua Admin' : 'Admin Terpilih';
+                
+                let tableRows = '';
+                data.forEach(item => {
+                    tableRows += `
+                        <tr>
+                            <td>${item.no}</td>
+                            <td>${item.employeeId}</td>
+                            <td>${item.name}</td>
+                            <td>${item.status}</td>
+                            <td>${item.present}</td>
+                            <td>${item.sick}</td>
+                            <td>${item.permit}</td>
+                            <td>${item.absent}</td>
+                            <td>${item.dispensation}</td>
+                            <td>${item.leave}</td>
+                            <td>${item.late}</td>
+                            <td>${item.wfh}</td>
+                            <td>${item.percentage}%</td>
+                        </tr>
+                    `;
+                });
+
+                const pdfContent = `
+                    <html>
+                        <head>
+                            <title>Rekap Admin - ${monthNames[month-1]} ${year}</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; padding: 20px; }
+                                h1 { text-align: center; margin-bottom: 10px; }
+                                h3 { text-align: center; margin-bottom: 30px; color: #666; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+                                th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+                                th { background-color: #f2f2f2; font-weight: bold; }
+                                .header-info { margin-bottom: 20px; }
+                                .info-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>REKAP ADMINISTRATOR</h1>
+                            <h3>SMK Darul Abror</h3>
+                            
+                            <div class="header-info">
+                                <div class="info-row">
+                                    <div><strong>Periode:</strong> ${monthNames[month-1]} ${year}</div>
+                                    <div><strong>Scope:</strong> ${scopeText}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div><strong>Tanggal Ekspor:</strong> ${new Date().toLocaleDateString('id-ID')}</div>
+                                    <div><strong>Jumlah Data:</strong> ${data.length} admin</div>
+                                </div>
+                            </div>
+                            
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>ID Admin</th>
+                                        <th>Nama</th>
+                                        <th>Status</th>
+                                        <th>Hadir</th>
+                                        <th>Sakit</th>
+                                        <th>Ijin</th>
+                                        <th>Alpha</th>
+                                        <th>Dispen</th>
+                                        <th>Cuti</th>
+                                        <th>Terlambat</th>
+                                        <th>WFH</th>
+                                        <th>% Kehadiran</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${tableRows}
+                                </tbody>
+                            </table>
+                        </body>
+                    </html>
+                `;
+
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(pdfContent);
+                printWindow.document.close();
+                printWindow.print();
+            }
+
+            static exportUsersData() {
+                const users = db.getAllUsers();
+                
+                if (users.length === 0) {
+                    UIComponents.showAlert('Tidak ada data admin', 'warning');
+                    return;
+                }
+
+                const loading = UIComponents.showLoading('Mengekspor data admin...');
+
+                setTimeout(() => {
+                    UIComponents.hideLoading(loading);
+
+                    const headers = [
+                        'No', 'ID Admin', 'Nama', 'Username', 'Role', 'Status',
+                        'Jabatan', 'Email', 'Telepon', 'Tanggal Bergabung'
+                    ];
+                    
+                    const rows = users.map((user, index) => [
+                        index + 1,
+                        `"${user.employeeId}"`,
+                        `"${user.name}"`,
+                        `"${user.username}"`,
+                        `"${user.role === 'super_admin' ? 'Super Admin' : 'Administrator'}"`,
+                        `"${user.status === 'active' ? 'Aktif' : 'Tidak Aktif'}"`,
+                        `"${user.position}"`,
+                        `"${user.email || ''}"`,
+                        `"${user.phone || ''}"`,
+                        new Date(user.createdAt).toLocaleDateString('id-ID')
+                    ]);
+
+                    const csvContent = [
+                        headers.join(','),
+                        ...rows.map(row => row.join(','))
+                    ].join('\n');
+
+                    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    
+                    link.href = url;
+                    link.download = `Data_Admin_SIPDA_${new Date().toISOString().split('T')[0]}.csv`;
+                    link.click();
+                    
+                    URL.revokeObjectURL(url);
+
+                    adminDb.addActivity({
+                        type: 'export',
+                        user: Auth.getCurrentUser().name,
+                        description: 'Mengexport data admin'
+                    });
+
+                    UIComponents.showAlert('Data admin berhasil diekspor', 'success');
+                }, 1000);
+            }
+
+            static loadAttendanceData() {
+                const today = new Date().toISOString().split('T')[0];
+                const attendance = db.getAttendanceByDate(today);
+                this.renderAttendanceTable(attendance);
+            }
+
+            static filterAttendanceData() {
+                const date = document.getElementById('attendanceDate').value;
+                const userId = document.getElementById('attendanceUser').value;
+                const status = document.getElementById('attendanceStatus').value;
+
+                let attendance;
+                if (date) {
+                    attendance = db.getAttendanceByDate(date);
+                } else {
+                    attendance = db.getAllAttendance();
+                }
+
+                if (userId !== 'all') {
+                    attendance = attendance.filter(att => att.userId === userId);
+                }
+
+                if (status !== 'all') {
+                    attendance = attendance.filter(att => {
+                        if (status === 'present') return att.status === 'present' && att.outTime;
+                        if (status === 'late') return att.status === 'late' && att.outTime;
+                        if (status === 'absent') return att.status === 'absent';
+                        if (status === 'sick') return att.type === 'sick';
+                        if (status === 'permit') return att.type === 'permit';
+                        if (status === 'wfh') return att.type === 'wfh';
+                        return true;
+                    });
+                }
+
+                this.renderAttendanceTable(attendance);
+            }
+
+            static renderAttendanceTable(attendance) {
+                const container = document.getElementById('attendanceTableBody');
+                
+                if (!container) return;
+                
+                if (attendance.length === 0) {
+                    container.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px; color: var(--gray-500);">
+                                <i class="fas fa-clipboard-list" style="font-size: 2rem; margin-bottom: 12px;"></i>
+                                <p>Tidak ada data kehadiran</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = attendance.map(att => {
+                    const user = db.getUserById(att.userId);
+                    if (!user) return '';
+
+                    const statusClass = this.getStatusClass(att);
+                    const statusText = this.getStatusText(att);
+                    
+                    const inTime = att.inTime ? 
+                        new Date(att.inTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 
+                        '-';
+                    
+                    const outTime = att.outTime ? 
+                        new Date(att.outTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 
+                        (att.isTap ? 'TAP' : '-');
+
+                    return `
+                        <tr>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <h4>${user.name}</h4>
+                                        <p>${user.employeeId}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${new Date(att.date).toLocaleDateString('id-ID')}</td>
+                            <td>${inTime}</td>
+                            <td>${outTime}</td>
+                            <td>
+                                <span class="user-status ${statusClass}">
+                                    ${statusText}
+                                </span>
+                            </td>
+                            <td>
+                                <span style="font-size: 0.8rem; color: var(--gray-600);">
+                                    ${att.location ? `${att.location.lat.toFixed(4)}, ${att.location.lng.toFixed(4)}` : '-'}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn-icon btn-edit" onclick="AdminManager.viewAttendanceDetail('${att.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            static getStatusClass(attendance) {
+                if (attendance.type === 'sick') return 'sick';
+                if (attendance.type === 'permit') return 'permit';
+                if (attendance.type === 'wfh') return 'wfh';
+                if (attendance.isTap) return 'no-out';
+                if (attendance.status === 'present') return 'present';
+                if (attendance.status === 'late') return 'late';
+                if (attendance.status === 'absent') return 'absent';
+                return 'default';
+            }
+
+            static getStatusText(attendance) {
+                if (attendance.type === 'sick') return 'Sakit';
+                if (attendance.type === 'permit') return 'Izin';
+                if (attendance.type === 'wfh') return 'WFH';
+                if (attendance.isTap) return 'TAP';
+                if (attendance.status === 'present') return 'Hadir';
+                if (attendance.status === 'late') return 'Terlambat';
+                if (attendance.status === 'absent') return 'Tidak Hadir';
+                return '-';
+            }
+
+            static viewAttendanceDetail(attendanceId) {
+                const allAttendance = db.getAllAttendance();
+                const attendance = allAttendance.find(att => att.id === attendanceId);
+                
+                if (!attendance) {
+                    UIComponents.showAlert('Data kehadiran tidak ditemukan', 'error');
+                    return;
+                }
+
+                const user = db.getUserById(attendance.userId);
+                if (!user) return;
+
+                const inTime = attendance.inTime ? 
+                    new Date(attendance.inTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 
+                    '-';
+                
+                const outTime = attendance.outTime ? 
+                    new Date(attendance.outTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 
+                    (attendance.isTap ? 'TAP (Tidak Absen Pulang)' : '-');
+
+                const statusText = this.getStatusText(attendance);
+                const statusClass = this.getStatusClass(attendance);
+
+                const content = `
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user" style="font-size: 1.5rem; color: var(--gray-600);"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 4px; color: var(--gray-900);">${user.name}</h4>
+                                <p style="color: var(--gray-600); font-size: 0.9rem;">${user.employeeId} • ${user.position}</p>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--gray-100); padding: 16px; border-radius: var(--radius);">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div>
+                                    <div style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 4px;">Tanggal</div>
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        ${new Date(attendance.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 4px;">Status</div>
+                                    <div>
+                                        <span class="user-status ${statusClass}" style="display: inline-block;">
+                                            ${statusText}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 4px;">Jam Masuk</div>
+                                    <div style="font-weight: 600; color: var(--gray-900);">${inTime}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 4px;">Jam Pulang</div>
+                                    <div style="font-weight: 600; color: var(--gray-900);">${outTime}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${attendance.notes ? `
+                            <div>
+                                <div style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 8px;">Keterangan</div>
+                                <div style="background: var(--gray-100); padding: 12px; border-radius: var(--radius); color: var(--gray-700);">
+                                    ${attendance.notes}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${attendance.location ? `
+                            <div>
+                                <div style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 8px;">Lokasi Presensi</div>
+                                <div style="background: var(--gray-100); padding: 12px; border-radius: var(--radius);">
+                                    <div style="color: var(--gray-700); margin-bottom: 4px;">
+                                        <i class="fas fa-map-marker-alt" style="margin-right: 8px; color: var(--primary);"></i>
+                                        Latitude: ${attendance.location.lat.toFixed(6)}
+                                    </div>
+                                    <div style="color: var(--gray-700);">
+                                        <i class="fas fa-map-marker-alt" style="margin-right: 8px; color: var(--primary);"></i>
+                                        Longitude: ${attendance.location.lng.toFixed(6)}
+                                    </div>
+                                    ${attendance.location.accuracy ? `
+                                        <div style="color: var(--gray-700); margin-top: 4px; font-size: 0.85rem;">
+                                            Akurasi: ${Math.round(attendance.location.accuracy)} meter
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                document.getElementById('attendanceDetailContent').innerHTML = content;
+                document.getElementById('attendanceDetailModal').classList.add('active');
+            }
+
+            static loadReports() {
+                this.setupReportsFilters();
+            }
+
+            static handleLogout() {
+                UIComponents.confirm('Apakah Anda yakin ingin keluar dari admin panel?', () => {
+                    const result = Auth.logout();
+                    if (result.success) {
+                        UIComponents.showToast('Logout berhasil', 'success');
+                        App.showLoginScreen();
+                    }
+                });
+            }
+        }
+
+        // ========== APPLICATION CORE ==========
+        class App {
+            static init() {
+                this.setupEventListeners();
+                this.loadLogo();
+                
+                // Auto login if already logged in
+                if (Auth.isLoggedIn()) {
+                    this.showAdminScreen();
+                    AdminManager.init();
+                }
+            }
+
+            static setupEventListeners() {
+                // Login form
+                const loginForm = document.getElementById('loginForm');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleLogin();
+                    });
+                }
+
+                // Load saved theme
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                }
+            }
+
+            static loadLogo() {
+                const logoPaths = [
+                    'img/logosmkda.png',
+                    'img/logo.png',
+                    'assets/logo.png',
+                    'logo.png'
+                ];
+
+                const loadLogoImage = (path) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        document.querySelectorAll('.fallback-logo').forEach(logo => {
+                            logo.innerHTML = `<img src="${path}" alt="SMK Darul Abror">`;
+                        });
+                    };
+                    img.onerror = () => {
+                        console.log(`Logo not found at: ${path}`);
+                    };
+                    img.src = path;
+                };
+
+                logoPaths.forEach(path => loadLogoImage(path));
+            }
+
+            static async handleLogin() {
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                const errorElement = document.getElementById('loginError');
+                
+                if (errorElement) errorElement.textContent = '';
+                
+                if (!username || !password) {
+                    if (errorElement) errorElement.textContent = 'Username dan password harus diisi';
+                    return;
+                }
+
+                const loading = UIComponents.showLoading('Memproses login...');
+                
+                setTimeout(() => {
+                    const result = Auth.login(username, password);
+                    
+                    UIComponents.hideLoading(loading);
+                    
+                    if (result.success) {
+                        UIComponents.showToast('Login berhasil!', 'success');
+                        this.showAdminScreen();
+                        AdminManager.init();
+                    } else {
+                        if (errorElement) errorElement.textContent = result.error;
+                        UIComponents.showToast(result.error, 'error');
+                    }
+                }, 1000);
+            }
+
+            static showLoginScreen() {
+                document.getElementById('loginScreen').classList.add('active');
+                document.getElementById('adminScreen').classList.remove('active');
+                
+                const username = document.getElementById('username');
+                const password = document.getElementById('password');
+                const loginError = document.getElementById('loginError');
+                
+                if (username) username.value = '';
+                if (password) password.value = '';
+                if (loginError) loginError.textContent = '';
+            }
+
+            static showAdminScreen() {
+                document.getElementById('loginScreen').classList.remove('active');
+                document.getElementById('adminScreen').classList.add('active');
+            }
+
+            static showChangePassword() {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+                
+                const currentPassword = prompt('Masukkan password saat ini:');
+                if (!currentPassword) return;
+
+                if (user.password !== currentPassword) {
+                    UIComponents.showToast('Password saat ini salah', 'error');
+                    return;
+                }
+
+                const newPassword = prompt('Masukkan password baru (min. 6 karakter):');
+                if (!newPassword || newPassword.length < 6) {
+                    UIComponents.showToast('Password minimal 6 karakter', 'error');
+                    return;
+                }
+
+                const confirmPassword = prompt('Konfirmasi password baru:');
+                if (newPassword !== confirmPassword) {
+                    UIComponents.showToast('Konfirmasi password tidak cocok', 'error');
+                    return;
+                }
+
+                db.updateUser(user.id, { password: newPassword });
+                user.password = newPassword;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                UIComponents.showToast('Password berhasil diperbarui', 'success');
+            }
+        }
+
+        // ========== INITIALIZE APP ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            App.init();
+        });
+    </script>
+</body>
+</html>
